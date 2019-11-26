@@ -30,6 +30,7 @@ import AccountPassword from 'app/components/account/AccountPassword';
 import AdminRouts from 'app/routes/AdminRoutes';
 import PageContainer from 'app/components/PageContainer';
 import React from 'react';
+import EnsemblPage from 'app/pages/ensemblPage/EnsemblPage';
 
 const AppRouts = (props: {
   authenticationStore: AuthenticationStore;
@@ -80,6 +81,7 @@ const AppRouts = (props: {
           path={PAGE_ROUTE.ALTERATION_TUMOR_TYPE}
           component={AlterationPage}
         />
+        <ErrorBoundaryRoute path={PAGE_ROUTE.ENSEMBL} component={EnsemblPage} />
         <Route exact path={PAGE_ROUTE.ABOUT} component={AboutPage} />
         <Route exact path={PAGE_ROUTE.TERMS} component={TermsPage} />
         <Route exact path={PAGE_ROUTE.TEAM} component={TeamPage} />

@@ -266,6 +266,7 @@ export enum PAGE_ROUTE {
   GENE = '/gene/:hugoSymbol',
   ALTERATION = '/gene/:hugoSymbol/:alteration',
   ALTERATION_TUMOR_TYPE = '/gene/:hugoSymbol/:alteration/:tumorType',
+  ENSEMBL = '/ensembl/:variantRecorderId',
   HOME = '/',
   ABOUT = '/about',
   TERMS = '/terms',
@@ -307,7 +308,8 @@ export enum LicenseType {
 export const LICENSE_TITLES: { [key: string]: string } = {
   [LicenseType.ACADEMIC]: 'Research use in an academic setting',
   [LicenseType.RESEARCH_IN_COMMERCIAL]: 'Research use in a commercial setting',
-  [LicenseType.HOSPITAL]: 'Use for patient services or reports in hospital/care setting',
+  [LicenseType.HOSPITAL]:
+    'Use for patient services or reports in hospital/care setting',
   [LicenseType.COMMERCIAL]: 'Use in a commercial product'
 };
 
