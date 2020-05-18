@@ -1,6 +1,7 @@
 import { getNCBIlink } from 'cbioportal-frontend-commons';
 import * as React from 'react';
 import styles from './citationListGroupItem.module.scss';
+import { AllHtmlEntities } from 'html-entities';
 
 type PmidItemProps = {
   title: string;
@@ -12,6 +13,7 @@ type PmidItemProps = {
 
 export default class PmidItem extends React.Component<PmidItemProps> {
   render() {
+    const entity = new AllHtmlEntities();
     return (
       <li key={this.props.pmid} className={styles.listGroupItem}>
         <a
@@ -20,7 +22,11 @@ export default class PmidItem extends React.Component<PmidItemProps> {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <b>{this.props.title}</b>
+          <b
+            dangerouslySetInnerHTML={{
+              __html: entity.decode(this.props.title)
+            }}
+          ></b>
         </a>
         <div className={styles.listGroupItemContent}>
           <span>
