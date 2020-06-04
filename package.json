@@ -41,7 +41,7 @@
     "mobx-react": "^4.2.1",
     "mobx-react-router": "^4.0.7",
     "moment": "2.24.0",
-    "oncokb-styles": "^0.1.1",
+    "oncokb-styles": "^0.2.0-alpha.1",
     "pluralize": "^8.0.0",
     "query-string": "^6.8.3",
     "react": "16.12.0",
@@ -56,7 +56,7 @@
     "react-iframe": "^1.8.0",
     "react-jhipster": "0.10.0",
     "react-loadable": "5.5.0",
-    "react-mutation-mapper": "^0.5.12",
+    "react-mutation-mapper": "^0.5.16-alpha.1",
     "react-portal": "latest",
     "react-responsive-tabs": "^3.3.0",
     "react-router": "^4.3.1",
@@ -166,7 +166,8 @@
     "write-file-webpack-plugin": "4.5.1"
   },
   "resolutions": {
-    "@types/react": "16.9.16"
+    "@types/react": "16.9.16",
+    "oncokb-styles": "0.2.0-alpha.1"
   },
   "engines": {
     "node": ">=12.13.0",

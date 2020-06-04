@@ -248,3 +248,21 @@ input[type='radio']:checked {
     word-break: break-word;
   }
 }
+
+.home-tabs {
+  justify-content: center;
+
+  > a {
+    color: black;
+    font-size: 1.1em;
+    padding: 0.8rem 1.1rem;
+  }
+
+  .nav-link.active {
+    border-top: 0.2em solid $orange !important;
+  }
+
+  .nav-link:focus {
+    outline: grey;
+  }
+}

@@ -8,7 +8,7 @@ import {
   LevelNumber,
   TypeaheadSearchResp
 } from 'app/shared/api/generated/OncoKbPrivateAPI';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
 import oncokbImg from 'content/images/oncokb.png';
 import { HomePageNumber } from 'app/components/HomePageNumber';
 import pluralize from 'pluralize';
@@ -20,6 +20,7 @@ import { CitationText } from 'app/components/CitationText';
 import _ from 'lodash';
 import AppStore from 'app/store/AppStore';
 import OncoKBSearch from 'app/components/oncokbSearch/OncoKBSearch';
+import '../index.scss';
 
 interface IHomeProps {
   content: string;
@@ -32,50 +33,106 @@ export type ExtendedTypeaheadSearchResp = TypeaheadSearchResp & {
   tumorTypesName: string;
 };
 
+export enum LevelType {
+  THERAPEUTIC,
+  DIAGNOSTIC,
+  PROGNOSTIC
+}
+
+const LevelTabTitles: { [key in LevelType]: string } = {
+  [LevelType.THERAPEUTIC]: 'Therapeutic levels',
+  [LevelType.DIAGNOSTIC]: 'Diagnostic levels',
+  [LevelType.PROGNOSTIC]: 'Prognostic levels'
+};
+
 @inject('routing', 'appStore')
 @observer
 class HomePage extends React.Component<IHomeProps> {
   @observable keyword = '';
 
   private levelGadgets: {
-    title?: string;
-    description: string;
-    level: string;
-    linkoutLevel: string;
-    combinedLevels: string[];
-  }[] = [
-    {
-      level: '1',
-      description: LEVEL_BUTTON_DESCRIPTION['1'],
-      linkoutLevel: '1',
-      combinedLevels: ['1']
-    },
-    {
-      level: '2',
-      description: LEVEL_BUTTON_DESCRIPTION['2'],
-      linkoutLevel: '2',
-      combinedLevels: ['2']
-    },
-    {
-      level: '3',
-      description: LEVEL_BUTTON_DESCRIPTION['3'],
-      linkoutLevel: '3',
-      combinedLevels: ['3']
-    },
-    {
-      level: '4',
-      description: LEVEL_BUTTON_DESCRIPTION['4'],
-      linkoutLevel: '4',
-      combinedLevels: ['4']
-    },
-    {
-      level: 'R1',
-      description: 'Resistance',
-      title: 'Level R1/R2',
-      linkoutLevel: 'R1,R2',
-      combinedLevels: ['R1', 'R2']
-    }
-  ];
+    [key in LevelType]: {
+      title?: string;
+      description?: string;
+      level: string;
+      linkoutLevel: string;
+      combinedLevels: string[];
+    }[];
+  } = {
+    [LevelType.THERAPEUTIC]: [
+      {
+        level: '1',
+        description: LEVEL_BUTTON_DESCRIPTION['1'],
+        linkoutLevel: '1',
+        combinedLevels: ['1']
+      },
+      {
+        level: '2',
+        description: LEVEL_BUTTON_DESCRIPTION['2'],
+        linkoutLevel: '2',
+        combinedLevels: ['2']
+      },
+      {
+        level: '3',
+        description: LEVEL_BUTTON_DESCRIPTION['3'],
+        linkoutLevel: '3',
+        combinedLevels: ['3']
+      },
+      {
+        level: '4',
+        description: LEVEL_BUTTON_DESCRIPTION['4'],
+        linkoutLevel: '4',
+        combinedLevels: ['4']
+      },
+      {
+        level: 'R1',
+        description: 'Resistance',
+        title: 'Level R1/R2',
+        linkoutLevel: 'R1,R2',
+        combinedLevels: ['R1', 'R2']
+      }
+    ],
+    [LevelType.DIAGNOSTIC]: [
+      {
+        level: 'Dx1',
+        description: LEVEL_BUTTON_DESCRIPTION['Dx1'],
+        linkoutLevel: 'Dx1',
+        combinedLevels: ['Dx1']
+      },
+      {
+        level: 'Dx2',
+        description: LEVEL_BUTTON_DESCRIPTION['Dx2'],
+        linkoutLevel: 'Dx2',
+        combinedLevels: ['Dx2']
+      },
+      {
+        level: 'Dx3',
+        description: LEVEL_BUTTON_DESCRIPTION['Dx3'],
+        linkoutLevel: 'Dx3',
+        combinedLevels: ['Dx3']
+      }
+    ],
+    [LevelType.PROGNOSTIC]: [
+      {
+        level: 'Px1',
+        description: LEVEL_BUTTON_DESCRIPTION['Px1'],
+        linkoutLevel: 'Px1',
+        combinedLevels: ['Px1']
+      },
+      {
+        level: 'Px2',
+        description: LEVEL_BUTTON_DESCRIPTION['Px2'],
+        linkoutLevel: 'Px2',
+        combinedLevels: ['Px2']
+      },
+      {
+        level: 'Px3',
+        description: LEVEL_BUTTON_DESCRIPTION['Px3'],
+        linkoutLevel: 'Px3',
+        combinedLevels: ['Px3']
+      }
+    ]
+  };
 
   readonly levelNumbers = remoteData<{ [level: string]: LevelNumber }>({
     await: () => [],
@@ -178,20 +235,75 @@ class HomePage extends React.Component<IHomeProps> {
             <OncoKBSearch />
           </Col>
         </Row>
-        <Row className="mb-5">
+        <Row className={'mb-5'}>
           <Col xs={0} lg={1}></Col>
-          {this.levelGadgets.map(levelGadget => (
-            <Col xs={12} sm={6} lg={2} key={levelGadget.level} className="px-0">
-              <LevelButton
-                level={levelGadget.level}
-                numOfGenes={this.getLevelNumber(levelGadget.combinedLevels)}
-                description={levelGadget.description}
-                title={levelGadget.title}
-                className="mb-2"
-                href={`/actionableGenes#levels=${levelGadget.linkoutLevel}`}
-              />
-            </Col>
-          ))}
+          <Col xs={12} lg={10}>
+            {/*<Tabs*/}
+            {/*  defaultActiveKey={LevelType.THERAPEUTIC}*/}
+            {/*  id="home-tabs"*/}
+            {/*  className={'home-tabs'}*/}
+            {/*>*/}
+            {/*  {[*/}
+            {/*    LevelType.THERAPEUTIC,*/}
+            {/*    LevelType.DIAGNOSTIC,*/}
+            {/*    LevelType.PROGNOSTIC*/}
+            {/*  ].map(levelType => (*/}
+            {/*    <Tab eventKey={levelType} title={LevelTabTitles[levelType]}>*/}
+            {/*      <div className={'d-flex justify-content-center mt-3'}>*/}
+            {/*        {this.levelGadgets[levelType].map(levelGadget => (*/}
+            {/*          <LevelButton*/}
+            {/*            level={levelGadget.level}*/}
+            {/*            numOfGenes={this.getLevelNumber(*/}
+            {/*              levelGadget.combinedLevels*/}
+            {/*            )}*/}
+            {/*            description={levelGadget.description}*/}
+            {/*            title={levelGadget.title}*/}
+            {/*            className="mb-2"*/}
+            {/*            href={`/actionableGenes#levels=${levelGadget.linkoutLevel}`}*/}
+            {/*          />*/}
+            {/*        ))}*/}
+            {/*      </div>*/}
+            {/*    </Tab>*/}
+            {/*  ))}*/}
+            {/*</Tabs>*/}
+
+            <div className={'d-flex flex-column'}>
+              <div className={'d-flex justify-content-center'}>
+                {[
+                  LevelType.THERAPEUTIC,
+                  LevelType.DIAGNOSTIC,
+                  LevelType.PROGNOSTIC
+                ].map((levelType, index) => (
+                  <Button
+                    style={
+                      index === 0
+                        ? {
+                            backgroundColor: '#1c75cd',
+                            color: 'white'
+                          }
+                        : undefined
+                    }
+                    variant={'light'}
+                    className={'mx-2'}
+                  >
+                    {LevelTabTitles[levelType]}
+                  </Button>
+                ))}
+              </div>
+              <div className={'d-flex justify-content-center mt-2'}>
+                {this.levelGadgets[LevelType.THERAPEUTIC].map(levelGadget => (
+                  <LevelButton
+                    level={levelGadget.level}
+                    numOfGenes={this.getLevelNumber(levelGadget.combinedLevels)}
+                    description={levelGadget.description}
+                    title={levelGadget.title}
+                    className="mb-2"
+                    href={`/actionableGenes#levels=${levelGadget.linkoutLevel}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </Col>
           <Col xs={0} lg={1}></Col>
         </Row>
         <Row className="mb-3">

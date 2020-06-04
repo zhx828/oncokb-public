@@ -108,6 +108,10 @@ export enum MUTATION_EFFECT {
 
 const EVIDENCE_TYPE = {
   FDA_APPROVED: 'FDA-approved',
+  WITH_REQUIRED_BIOMARKER: 'With required biomarker',
+  WITH_SUGGESTED_BIOMARKER: 'With suggested biomarker',
+  PX1_DES: 'Well-powered studie(s)',
+  PX2_DES: 'Some studie(s)',
   STANDARD_CARE: 'Standard care',
   CLINICAL_EVIDENCE: 'Clinical evidence',
   BIOLOGICAL_EVIDENCE: 'Biological evidence'
@@ -119,9 +123,32 @@ export const LEVEL_BUTTON_DESCRIPTION = {
   '3': EVIDENCE_TYPE.CLINICAL_EVIDENCE,
   '4': EVIDENCE_TYPE.BIOLOGICAL_EVIDENCE,
   R1: EVIDENCE_TYPE.STANDARD_CARE,
-  R2: EVIDENCE_TYPE.CLINICAL_EVIDENCE
+  R2: EVIDENCE_TYPE.CLINICAL_EVIDENCE,
+  Dx1: EVIDENCE_TYPE.WITH_REQUIRED_BIOMARKER,
+  Dx2: EVIDENCE_TYPE.WITH_SUGGESTED_BIOMARKER,
+  Dx3: EVIDENCE_TYPE.CLINICAL_EVIDENCE,
+  Px1: EVIDENCE_TYPE.PX1_DES,
+  Px2: EVIDENCE_TYPE.PX2_DES,
+  Px3: EVIDENCE_TYPE.CLINICAL_EVIDENCE
 };
-export const LEVELS = ['1', '2', '3', '4', 'R1', 'R2'];
+
+export const ALL_LEVELS = [
+  '1',
+  '2',
+  '3',
+  '4',
+  'R1',
+  'R2',
+  'Dx1',
+  'Dx2',
+  'Dx3',
+  'Px1',
+  'Px2',
+  'Px3'
+];
+export const TX_LEVELS = ['1', '2', '3', '4', 'R1', 'R2'];
+export const DX_LEVELS = ['Dx1', 'Dx2', 'Dx3'];
+export const PX_LEVELS = ['Px1', 'Px2', 'Px3'];
 export const LEVEL_OF_EVIDENCE = [
   'LEVEL_1',
   'LEVEL_2',
@@ -178,7 +205,7 @@ export const THRESHOLD_ALTERATION_PAGE_TABLE_FIXED_HEIGHT = 5;
 export const LG_TABLE_FIXED_HEIGHT = 650;
 export const SM_TABLE_FIXED_HEIGHT = 400;
 export const IMG_MAX_WIDTH = 700;
-export const COMPONENT_PADDING = ['pl-2', 'pr-2', 'mb-2'];
+export const COMPONENT_PADDING = ['pl-2', 'pr-2'];
 export const H5_FONT_SIZE = '1.25rem';
 
 // Defaults for tooltip size

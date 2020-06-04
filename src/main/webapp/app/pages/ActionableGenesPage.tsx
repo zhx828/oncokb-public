@@ -31,12 +31,15 @@ import { Else, If, Then } from 'react-if';
 import LoadingIndicator from 'app/components/loadingIndicator/LoadingIndicator';
 import {
   LEVEL_BUTTON_DESCRIPTION,
-  LEVELS,
   LG_TABLE_FIXED_HEIGHT,
   TABLE_COLUMN_KEY,
   COMPONENT_PADDING,
   QUERY_SEPARATOR_FOR_QUERY_STRING,
-  DOCUMENT_TITLES
+  DOCUMENT_TITLES,
+  ALL_LEVELS,
+  TX_LEVELS,
+  DX_LEVELS,
+  PX_LEVELS
 } from 'app/config/constants';
 import { RouterStore } from 'mobx-react-router';
 import AuthenticationStore from 'app/store/AuthenticationStore';
@@ -45,7 +48,9 @@ import OncoKBTable from 'app/components/oncokbTable/OncoKBTable';
 import { AuthDownloadButton } from 'app/components/authDownloadButton/AuthDownloadButton';
 import DocumentTitle from 'react-document-title';
 import { COLOR_BLUE } from 'app/config/theme';
+import * as styles from '../components/levelButton/LevelButton.module.scss';
 
+const LEVELS = ALL_LEVELS;
 type Treatment = {
   level: string;
   hugoSymbol: string;
@@ -537,28 +542,80 @@ export default class ActionableGenesPage extends React.Component<
           }
         >
           <Then>
+            <Row className={'mt-2'}>
+              <Col>
+                <div>
+                  <i className={'fa fa-minus'}></i>
+                  <span className={'px-2'} style={{ background: 'white' }}>
+                    Click to close therapeutic levels selection
+                  </span>
+                </div>
+                <div>
+                  <hr style={{ marginTop: '-10px' }} />
+                </div>
+              </Col>
+            </Row>
             <Row
-              style={{ paddingLeft: '0.5rem', paddingRight: '0.5rem' }}
-              className={'mb-2'}
+              style={{
+                paddingLeft: '0.5rem',
+                paddingRight: '0.5rem'
+              }}
+              className={'py-2'}
             >
-              {LEVELS.map(level => (
-                <Col
-                  className={classnames(...COMPONENT_PADDING)}
-                  lg={2}
-                  xs={6}
-                  key={level}
-                >
-                  <LevelButton
-                    level={level}
-                    numOfGenes={this.levelNumbers[level]}
-                    description={LEVEL_BUTTON_DESCRIPTION[level]}
-                    active={this.levelSelected[level]}
-                    className="mb-2"
-                    disabled={this.levelNumbers[level] === 0}
-                    onClick={() => this.updateLevelSelection(level)}
-                  />
-                </Col>
-              ))}
+              {/*<Col*/}
+              {/*  xs={2}*/}
+              {/*  sm={1}*/}
+              {/*  className={'text-center d-flex align-items-center'}*/}
+              {/*>*/}
+              {/*  Therapeutic Levels*/}
+              {/*</Col>*/}
+              <Col xs={12} sm={12}>
+                <Row>
+                  {TX_LEVELS.map(level => (
+                    <Col
+                      className={classnames(...COMPONENT_PADDING)}
+                      lg={2}
+                      xs={6}
+                      key={level}
+                    >
+                      <LevelButton
+                        level={level}
+                        numOfGenes={this.levelNumbers[level]}
+                        description={LEVEL_BUTTON_DESCRIPTION[level]}
+                        active={this.levelSelected[level]}
+                        disabled={this.levelNumbers[level] === 0}
+                        onClick={() => this.updateLevelSelection(level)}
+                      />
+                    </Col>
+                  ))}
+                </Row>
+              </Col>
+            </Row>
+            <Row className={'my-2'}>
+              <Col>
+                <div>
+                  <i className={'fa fa-plus'}></i>
+                  <span className={'px-2'} style={{ background: 'white' }}>
+                    Click to select diagnostic levels
+                  </span>
+                </div>
+                <div>
+                  <hr style={{ marginTop: '-10px' }} />
+                </div>
+              </Col>
+            </Row>
+            <Row className={'my-2'}>
+              <Col>
+                <div>
+                  <i className={'fa fa-plus'}></i>
+                  <span className={'px-2'} style={{ background: 'white' }}>
+                    Click to select prognostic levels
+                  </span>
+                </div>
+                <div>
+                  <hr style={{ marginTop: '-10px' }} />
+                </div>
+              </Col>
             </Row>
             <Row
               style={{ paddingLeft: '0.5rem', paddingRight: '0.5rem' }}

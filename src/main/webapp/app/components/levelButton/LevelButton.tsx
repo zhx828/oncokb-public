@@ -12,7 +12,7 @@ type LevelButtonProps = {
   routing?: RouterStore;
   title?: string;
   numOfGenes: number;
-  description: string;
+  description?: string;
   onClick?: () => void;
   className?: string;
   active?: boolean;
@@ -47,7 +47,9 @@ export const LevelButton = inject('routing')((props: LevelButtonProps) => {
       >
         {props.title ? props.title : `Level ${props.level}`}
       </div>
-      <div className={styles.levelDescription}>{props.description}</div>
+      {props.description && (
+        <div className={styles.levelDescription}>{props.description}</div>
+      )}
       <div
         className={classnames(`oncokb level-${props.level}`, styles.geneNumber)}
       >{`${props.numOfGenes} ${pluralize('Gene', props.numOfGenes)}`}</div>

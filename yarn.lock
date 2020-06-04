@@ -3836,10 +3836,33 @@ caseless@^0.12.0, caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-cbioportal-frontend-commons@0.2.11, cbioportal-frontend-commons@^0.2.11:
+cbioportal-frontend-commons@0.2.11:
   version "0.2.11"
   resolved "https://registry.yarnpkg.com/cbioportal-frontend-commons/-/cbioportal-frontend-commons-0.2.11.tgz#11814c3c76d73a0b28cbd96b59a24a516b3a6b25"
   integrity sha512-M8Iy7mOa5Rj0SM4KoAea77ERiDS/IyNfG+bmEyuAKL1qv6bYxDSxPqLJ7aoA/+GvG3+O9GaKTfHXHWqSXf07/w==
+  dependencies:
+    autobind-decorator "^2.1.0"
+    classnames "^2.2.5"
+    jquery "^3.2.1"
+    lodash "^4.17.11"
+    measure-text "0.0.4"
+    mobxpromise "github:cbioportal/mobxpromise#v1.0.2"
+    object-sizeof "^1.2.0"
+    oncokb-ts-api-client "^1.0.4"
+    rc-tooltip "3.7.3"
+    react-file-download "^0.3.2"
+    react-select "^3.0.4"
+    save-svg-as-png "^1.4.6"
+    seamless-immutable "^7.0.1"
+    superagent "^3.8.3"
+    svg2pdf.js "^1.3.3"
+    typescript "3.8.3"
+    url "^0.11.0"
+
+cbioportal-frontend-commons@^0.2.13:
+  version "0.2.13"
+  resolved "https://registry.yarnpkg.com/cbioportal-frontend-commons/-/cbioportal-frontend-commons-0.2.13.tgz#ea5fc285229a5d5fc95ea8c8024596e3f7438e8c"
+  integrity sha512-U0gbMTZpVA7+Pw2xgx7VjqZSuowLZ9t0InVTvKWYiELgVNA59b/FA5/D7/z16lfgxrSMMTXBcYl4vAo1V+Jtbg==
   dependencies:
     autobind-decorator "^2.1.0"
     classnames "^2.2.5"
@@ -10814,10 +10837,10 @@ once@1.x, once@^1.3.0, once@^1.3.1, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-oncokb-styles@^0.1.1, oncokb-styles@~0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/oncokb-styles/-/oncokb-styles-0.1.2.tgz#8b26c0a0829787cdc1b595d3a021b3266607102b"
-  integrity sha512-tuy5s3qFxgf1ogMATQSRPNgLlAMrvOOTCAN1dm/wJ+VZoStbJ7g36/qHwc99UPfh3vrB05broLodF+k58p5tUw==
+oncokb-styles@0.2.0-alpha.1, oncokb-styles@^0.2.0-alpha.1:
+  version "0.2.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/oncokb-styles/-/oncokb-styles-0.2.0-alpha.1.tgz#5261225a8b4dca8f64afa8d68f64d438a2375ec4"
+  integrity sha512-tPVO1HUCQMQxT6NfBWu2fuSJyXAErgLSyFnpawWK1U2OA23Z2kBXecfBYtzNLzsfyywAi+7SQpCjtYTpcHKL8Q==
 
 oncokb-ts-api-client@^1.0.4:
   version "1.0.4"
@@ -12587,6 +12610,11 @@ react-html-parser@^2.0.2:
   dependencies:
     htmlparser2 "^3.9.0"
 
+react-if@^2.1.0:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/react-if/-/react-if-2.2.2.tgz#81fcc44d945e7afe9c819a81148e5871ff7cc8e2"
+  integrity sha1-gfzETZReev6cgZqBFI5Ycf98yOI=
+
 react-if@^3.4.3:
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/react-if/-/react-if-3.4.3.tgz#bab45478dd0374b1c5fe44aa972a2fa921416a57"
@@ -12649,22 +12677,23 @@ react-motion@^0.5.2:
     prop-types "^15.5.8"
     raf "^3.1.0"
 
-react-mutation-mapper@^0.5.12:
-  version "0.5.12"
-  resolved "https://registry.yarnpkg.com/react-mutation-mapper/-/react-mutation-mapper-0.5.12.tgz#c959618fe047aaa3e65181e8b6d3925f3ab5114d"
-  integrity sha512-UCdEwjYeKAVTYtGkH0GPpbW095yJJKL7w/j3VWM/jx/C1/ETbaJxFimmWB9ddmJ7wR9D7E4myTtXCgzrNWkuQw==
+react-mutation-mapper@^0.5.16-alpha.1:
+  version "0.5.16-alpha.1"
+  resolved "https://registry.yarnpkg.com/react-mutation-mapper/-/react-mutation-mapper-0.5.16-alpha.1.tgz#41046c70a27fd513853d38b8c597c9d7d3922812"
+  integrity sha512-nUThenOCrH7ATSMj//zFzv4Eh8obZ4Mb6m/oNQU7kXSWu5F9Djt92/ESpdHNQLn3/IOoJf1WmtIWyHH5hSpPGw==
   dependencies:
     autobind-decorator "^2.1.0"
-    cbioportal-frontend-commons "^0.2.11"
+    cbioportal-frontend-commons "^0.2.13"
     cbioportal-utils "^0.1.1"
     classnames "^2.2.5"
     genome-nexus-ts-api-client "^1.1.3"
     jquery "^3.2.1"
     lodash "^4.17.11"
     mobxpromise "github:cbioportal/mobxpromise#v1.0.2"
-    oncokb-styles "~0.1.2"
+    oncokb-styles "0.2.0-alpha.1"
     oncokb-ts-api-client "^1.0.4"
     react-collapse "^4.0.3"
+    react-if "^2.1.0"
     react-motion "^0.5.2"
     react-rangeslider "^2.2.0"
     react-select "^3.0.4"
