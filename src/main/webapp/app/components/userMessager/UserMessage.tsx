@@ -27,7 +27,7 @@ function makeMessageKey(id: string) {
 let MESSAGE_DATA: IUserMessage[];
 
 if (
-  ['beta.oncokb.org', 'www.oncokb.org'].includes(
+  ['beta.oncokb.org', 'www.oncokb.org', 'localhost'].includes(
     getBrowserWindow().location.hostname
   )
 ) {
@@ -37,8 +37,8 @@ if (
     // BASED ON USERS LOCALSTORAGE
     {
       dateEnd: 100000000000000,
-      content: `Join our webinar to learn how to use OncoKB effectively, <strong>May 7th 3pm-4pm EDT</strong>. <a class="btn btn-primary btn-sm ml-2 user-messager-container-button" target="_blank" href="https://meetmsk.zoom.us/meeting/register/vJcvf-CvrzsshBK8VEiD5J9DSRDf7C--qg">Click here to register!</a>`,
-      id: '2020_spring_webinar'
+      content: `On Wednesday June 10th, we will participate in <a class="btn btn-primary btn-sm" target="_blank" href="https://www.shutdownstem.com/">#ShutDownAcademia</a>. We encourage everyone to participate. We will educate ourselves and consider how we can support the <a class="btn btn-primary btn-sm" target="_blank" href="https://blacklivesmatter.com">#BLM</a> movement. The website will be online for those who need it.`,
+      id: '20200610_blm'
     }
   ];
 }
