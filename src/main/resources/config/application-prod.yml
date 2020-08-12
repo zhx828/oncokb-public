@@ -164,11 +164,14 @@ application:
   token-usage-check:
   token-usage-check-whitelist:
   redis:
-    type: 'master-slave'
+    type: 'sentinel'
     password: 'oncokb-public-redis-password'
-    master-slave-cache:
-      master-address: 'redis://oncokb-public-redis-master:6379'
-      slave-address: 'redis://oncokb-public-redis-slave:6379'
+    sentinel-cache:
+      leader-name: 'mymaster'
+      sentinel-addresses:
+        - 'redis://oncokb-public-redis-ha-server-0:6379'
+        - 'redis://oncokb-public-redis-ha-server-1:6379'
+        - 'redis://oncokb-public-redis-ha-server-2:6379'
   email-addresses:
     license-address:
     registration-address:

@@ -8,6 +8,7 @@ public class RedisProperties {
     String password;
     MasterSlaveRedisCache masterSlaveCache;
     SingleRedisCache singleCache;
+    SentinelRedisCache sentinelCache;
 
     public String getType() {
         return type;
@@ -39,5 +40,13 @@ public class RedisProperties {
 
     public void setSingleCache(SingleRedisCache singleCache) {
         this.singleCache = singleCache;
+    }
+
+    public SentinelRedisCache getSentinelCache() {
+        return sentinelCache;
+    }
+
+    public void setSentinelCache(SentinelRedisCache sentinelCache) {
+        this.sentinelCache = sentinelCache;
     }
 }
