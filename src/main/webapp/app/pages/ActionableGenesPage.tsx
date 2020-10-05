@@ -605,14 +605,46 @@ export default class ActionableGenesPage extends React.Component<
             <Row className={'my-2'}>
               <Col>
                 <div>
-                  <i className={'fa fa-plus'}></i>
+                  <i className={'fa fa-minus'}></i>
                   <span className={'px-2'} style={{ background: 'white' }}>
-                    Click to select diagnostic levels
+                    Click to close diagnostic levels section
                   </span>
                 </div>
                 <div>
                   <hr style={{ marginTop: '-10px' }} />
                 </div>
+              </Col>
+            </Row>
+            <Row
+              style={{
+                paddingLeft: '0.5rem',
+                paddingRight: '0.5rem',
+              }}
+              className={'py-2'}
+            >
+              <Col xs={12} sm={12}>
+                <Row>
+                  {DX_LEVELS.map(level => (
+                    <Col
+                      className={classnames(
+                        ...COMPONENT_PADDING.concat([
+                          'd-flex justify-content-center',
+                        ])
+                      )}
+                      xs={4}
+                      key={level}
+                    >
+                      <LevelButton
+                        level={level}
+                        numOfGenes={this.levelNumbers[level]}
+                        description={LEVEL_BUTTON_DESCRIPTION[level]}
+                        active={this.levelSelected[level]}
+                        disabled={this.levelNumbers[level] === 0}
+                        onClick={() => this.updateLevelSelection(level)}
+                      />
+                    </Col>
+                  ))}
+                </Row>
               </Col>
             </Row>
             <Row className={'my-2'}>

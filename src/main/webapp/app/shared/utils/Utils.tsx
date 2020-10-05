@@ -315,7 +315,7 @@ export function getDefaultColumnDefinition<T>(
         sortMethod: defaultSortMethod,
         Cell(props: any) {
           return (
-            <div className={'my-1'}>
+            <div className={'my-1 d-flex justify-content-center'}>
               <OncoKBLevelIcon
                 level={props.original.level}
                 withDescription={true}
