@@ -17,6 +17,7 @@ import org.mskcc.cbio.oncokb.web.rest.errors.*;
 import org.mskcc.cbio.oncokb.web.rest.errors.EmailAlreadyUsedException;
 import org.mskcc.cbio.oncokb.web.rest.errors.InvalidPasswordException;
 import org.mskcc.cbio.oncokb.web.rest.vm.KeyAndPasswordVM;
+import org.mskcc.cbio.oncokb.web.rest.vm.LoginVM;
 import org.mskcc.cbio.oncokb.web.rest.vm.ManagedUserVM;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -31,6 +34,7 @@ import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.html.Option;
 import javax.validation.Valid;
+import java.time.Instant;
 import java.util.*;
 
 import static org.mskcc.cbio.oncokb.config.Constants.MSK_EMAIL_DOMAIN;
@@ -60,6 +64,8 @@ public class AccountResource {
 
     private final TokenService tokenService;
 
+    private final PasswordEncoder passwordEncoder;
+
     private final ApplicationProperties applicationProperties;
 
     @Autowired
@@ -72,6 +78,8 @@ public class AccountResource {
     public AccountResource(UserRepository userRepository, UserService userService,
                            MailService mailService, TokenProvider tokenProvider,
                            SlackService slackService, EmailService emailService,
+                           AuthenticationManagerBuilder authenticationManagerBuilder,
+                           PasswordEncoder passwordEncoder,
                            TokenService tokenService, ApplicationProperties applicationProperties
                            ) {
 
@@ -81,6 +89,7 @@ public class AccountResource {
         this.tokenProvider = tokenProvider;
         this.slackService = slackService;
         this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
         this.applicationProperties = applicationProperties;
     }
@@ -124,43 +133,48 @@ public class AccountResource {
                     if (existingUser.isPresent()) {
                         UserDTO userDTO = userMapper.userToUserDTO(existingUser.get());
                         if (userDTO.getLicenseType().equals(LicenseType.ACADEMIC)) {
-                            if (!userDTO.isActivated()) {
-                                userDTO.setActivated(true);
-                            }
-                            userService.updateUser(userDTO);
+                            userService.approveUser(userDTO);
                             slackService.sendApprovedConfirmation(userMapper.userToUserDTO(userOptional.get()));
                             return true;
                         } else {
-                            slackService.sendUserRegistrationToChannel(userMapper.userToUserDTO(userOptional.get()));
-                            return false;
+                            return activateUser(userOptional, userDTO);
                         }
                     } else {
                         throw new AccountResourceException("User could not be found");
                     }
                 } else {
-                    UserDTO userDTO = userMapper.userToUserDTO(user);
-                    if (isMSKCommercialUser(userDTO)) {
-                        LicenseType registeredLicenseType = userDTO.getLicenseType();
-                        userDTO.setLicenseType(LicenseType.ACADEMIC);
-                        if (!userDTO.isActivated()) {
-                            userDTO.setActivated(true);
-                        }
-                        userService.updateUser(userDTO);
-                        slackService.sendApprovedConfirmationForMSKCommercialRequest(userMapper.userToUserDTO(userOptional.get()), registeredLicenseType);
-                    } else {
-                        slackService.sendUserRegistrationToChannel(userMapper.userToUserDTO(userOptional.get()));
-                    }
-                    return false;
+                    return activateUser(userOptional, userMapper.userToUserDTO(user));
                 }
             } else {
                 // This user exists before, we are looking for to extend the expiration date of all tokens associated
-                tokenService.findByUser(user).forEach(token -> {
-                    token.setExpiration(token.getExpiration().plusSeconds(tokenProvider.EXPIRATION_TIME_IN_SECONDS));
-                    tokenService.save(token);
-                });
+                List<Token> userTokens = tokenService.findByUser(user);
+                boolean userAccountCanNOTBeExtended = userTokens.stream().filter(token -> !token.isRenewable()).findAny().isPresent();
+                if (userAccountCanNOTBeExtended) {
+                    throw new AccountResourceException("Your account token is expired and cannot be extended.");
+                } else {
+                    Instant defaultExpiration = Instant.now().plusSeconds(tokenProvider.EXPIRATION_TIME_IN_SECONDS);
+                    tokenService.findByUser(user).forEach(token -> {
+                        // if the extended date based on the current token expiration is before the date in 6month, we should use the bigger one
+                        Instant expirationBased = token.getExpiration().plusSeconds(tokenProvider.EXPIRATION_TIME_IN_SECONDS);
+                        token.setExpiration(expirationBased.isBefore(defaultExpiration) ? defaultExpiration : expirationBased);
+                        tokenService.save(token);
+                    });
+                }
             }
             return true;
         }
+    }
+
+    private boolean activateUser(Optional<User> userOptional, UserDTO userDTO) {
+        if (isMSKCommercialUser(userDTO)) {
+            LicenseType registeredLicenseType = userDTO.getLicenseType();
+            userDTO.setLicenseType(LicenseType.ACADEMIC);
+            userService.approveUser(userDTO);
+            slackService.sendApprovedConfirmationForMSKCommercialRequest(userMapper.userToUserDTO(userOptional.get()), registeredLicenseType);
+        } else {
+            slackService.sendUserRegistrationToChannel(userMapper.userToUserDTO(userOptional.get()));
+        }
+        return false;
     }
 
     private boolean isMSKCommercialUser(UserDTO userDTO) {
@@ -275,9 +289,9 @@ public class AccountResource {
                 // if there is a token already available, we should use the same expiration date
                 // we only renew the token after validating the account is valid on half year basis
                 if (tokens.size() > 0) {
-                    return tokenProvider.createToken(Optional.of(tokens.iterator().next().getExpiration()));
+                    return tokenProvider.createTokenForCurrentUserLogin(Optional.of(tokens.iterator().next().getExpiration()), Optional.empty());
                 } else {
-                    return tokenProvider.createToken(Optional.empty());
+                    return tokenProvider.createTokenForCurrentUserLogin(Optional.empty(), Optional.empty());
                 }
             }
         } else {
@@ -317,7 +331,7 @@ public class AccountResource {
         } else {
             // Pretend the request has been successful to prevent checking which emails really exist
             // but log that an invalid attempt has been made
-            log.warn("Password reset requested for non existing mail '{}'", mail);
+            log.warn("Password reset requested for non existing mail");
         }
     }
 
@@ -338,6 +352,16 @@ public class AccountResource {
 
         if (!user.isPresent()) {
             throw new AccountResourceException("No user was found for this reset key");
+        }
+    }
+
+
+    @PostMapping(path = "/account/resend-verification")
+    public void resendVerification(@RequestBody LoginVM loginVM) {
+        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(loginVM.getUsername());
+
+        if (userOptional.isPresent() && passwordEncoder.matches(loginVM.getPassword(), userOptional.get().getPassword())) {
+            mailService.sendActivationEmail(userMapper.userToUserDTO(userOptional.get()));
         }
     }
 

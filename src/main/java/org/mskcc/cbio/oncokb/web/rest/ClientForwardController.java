@@ -1,6 +1,7 @@
 package org.mskcc.cbio.oncokb.web.rest;
 
 import org.mskcc.cbio.oncokb.config.application.ApplicationProperties;
+import org.mskcc.cbio.oncokb.config.application.FrontendProperties;
 import org.mskcc.cbio.oncokb.security.uuid.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +32,8 @@ public class ClientForwardController {
     @GetMapping(value = "/index.html")
     public ResponseEntity<String> index() {
         Context context = new Context();
-        context.setVariable("applicationProperties", applicationProperties);
+        context.setVariable("appProfile", applicationProperties.getProfile());
+        context.setVariable("frontConfig", applicationProperties.getFrontend());
         context.setVariable("publicToken", tokenProvider.getPubWebToken());
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -53,9 +55,12 @@ public class ClientForwardController {
 
     /**
      * Forwards any unmapped paths (except those containing a period) to the client {@code index.html}.
+     * Allow dots for any url under gene and hgvsg
+     * for gene, we could annotate /gene/BRAF/p.V600E
+     * for hgvsg, we could annotate as /hgvsg/7:g.140753336A>T?refGenome=GRCH38
      * @return forward to client {@code index.html}.
      */
-    @GetMapping(value = "/**/{path:[^\\.]*}")
+    @GetMapping(value = {"/**/{path:[^\\.]*}", "/gene/**", "/hgvsg/**", "/users/**"})
     public String forward() {
         return "forward:/";
     }

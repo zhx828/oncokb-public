@@ -3,7 +3,7 @@
     "promptValues": {
       "packageName": "org.mskcc.cbio.oncokb"
     },
-    "jhipsterVersion": "6.6.0",
+    "jhipsterVersion": "6.9.1",
     "applicationType": "monolith",
     "baseName": "oncokb-public",
     "packageName": "org.mskcc.cbio.oncokb",
@@ -11,7 +11,7 @@
     "serverPort": "9090",
     "authenticationType": "jwt",
     "cacheProvider": "redis",
-    "enableHibernateCache": true,
+    "enableHibernateCache": false,
     "websocket": false,
     "databaseType": "sql",
     "devDatabaseType": "mysql",
@@ -34,9 +34,7 @@
     "blueprints": [],
     "clientFramework": "react",
     "clientTheme": "none",
-    "appsFolders": [
-      "public-website"
-    ],
+    "appsFolders": ["public-website"],
     "directoryPath": "../",
     "dockerRepositoryName": "oncokb-public",
     "dockerPushCommand": "docker push",

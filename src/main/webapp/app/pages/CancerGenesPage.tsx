@@ -8,16 +8,16 @@ import { SuggestCuration } from 'app/components/SuggestCuration';
 import { Col, Row } from 'react-bootstrap';
 import * as _ from 'lodash';
 import OncoKBTable, {
-  SearchColumn
+  SearchColumn,
 } from 'app/components/oncokbTable/OncoKBTable';
 import {
   filterByKeyword,
-  getDefaultColumnDefinition
+  getDefaultColumnDefinition,
 } from 'app/shared/utils/Utils';
 import {
   DOCUMENT_TITLES,
   LG_TABLE_FIXED_HEIGHT,
-  TABLE_COLUMN_KEY
+  TABLE_COLUMN_KEY,
 } from 'app/config/constants';
 import AppStore from 'app/store/AppStore';
 import { AuthDownloadButton } from 'app/components/authDownloadButton/AuthDownloadButton';
@@ -77,7 +77,7 @@ export default class CancerGenesPage extends React.Component<{
         ) : (
           `${props.original.hugoSymbol}`
         );
-      }
+      },
     },
     {
       id: 'oncokbAnnotated',
@@ -90,7 +90,7 @@ export default class CancerGenesPage extends React.Component<{
       ),
       accessor: 'oncokbAnnotated',
       style: { textAlign: 'center' },
-      minWidth: 100,
+      minWidth: 80,
       sortMethod: defaultSortMethod,
       Cell(props: { original: ExtendCancerGene }) {
         return props.original.oncokbAnnotated ? (
@@ -98,7 +98,7 @@ export default class CancerGenesPage extends React.Component<{
         ) : (
           <SuggestCuration suggestion={props.original.hugoSymbol} />
         );
-      }
+      },
     },
     {
       id: 'geneType',
@@ -112,7 +112,7 @@ export default class CancerGenesPage extends React.Component<{
       accessor: 'geneType',
       onFilter: (data: ExtendCancerGene, keyword) =>
         filterByKeyword(data.geneType, keyword),
-      sortMethod: (a: string, b: string) => a.localeCompare(b)
+      sortMethod: (a: string, b: string) => a.localeCompare(b),
     },
     {
       id: 'mSKImpact',
@@ -146,7 +146,7 @@ export default class CancerGenesPage extends React.Component<{
       sortable: true,
       Cell(props: { original: ExtendCancerGene }) {
         return props.original.mSKImpact ? <i className="fa fa-check" /> : '';
-      }
+      },
     },
     {
       id: 'mSKHeme',
@@ -180,10 +180,11 @@ export default class CancerGenesPage extends React.Component<{
       ),
       style: { textAlign: 'center' },
       accessor: 'mSKHeme',
+      minWidth: 120,
       sortable: true,
       Cell(props: { original: ExtendCancerGene }) {
         return props.original.mSKHeme ? <i className="fa fa-check" /> : '';
-      }
+      },
     },
     {
       id: 'foundation',
@@ -217,11 +218,11 @@ export default class CancerGenesPage extends React.Component<{
       ),
       style: { textAlign: 'center' },
       accessor: 'foundation',
-      minWidth: 150,
+      minWidth: 120,
       sortable: true,
       Cell(props: { original: ExtendCancerGene }) {
         return props.original.foundation ? <i className="fa fa-check" /> : '';
-      }
+      },
     },
     {
       id: 'foundationHeme',
@@ -253,7 +254,7 @@ export default class CancerGenesPage extends React.Component<{
           />
         </>
       ),
-      minWidth: 150,
+      minWidth: 120,
       style: { textAlign: 'center' },
       accessor: 'foundationHeme',
       sortable: true,
@@ -263,7 +264,7 @@ export default class CancerGenesPage extends React.Component<{
         ) : (
           ''
         );
-      }
+      },
     },
     {
       id: 'vogelstein',
@@ -292,12 +293,12 @@ export default class CancerGenesPage extends React.Component<{
         </>
       ),
       style: { textAlign: 'center' },
-      minWidth: 200,
+      minWidth: 110,
       accessor: 'vogelstein',
       sortable: true,
       Cell(props: { original: ExtendCancerGene }) {
         return props.original.vogelstein ? <i className="fa fa-check" /> : '';
-      }
+      },
     },
     {
       id: 'sangerCGC',
@@ -335,7 +336,7 @@ export default class CancerGenesPage extends React.Component<{
       sortable: true,
       Cell(props: { original: ExtendCancerGene }) {
         return props.original.sangerCGC ? <i className="fa fa-check" /> : '';
-      }
+      },
     },
     {
       id: 'numOfSources',
@@ -344,16 +345,16 @@ export default class CancerGenesPage extends React.Component<{
       sortable: true,
       onFilter: (data: ExtendCancerGene, keyword) =>
         filterByKeyword(data.numOfSources.toString(), keyword),
-      accessor: 'numOfSources'
-    }
+      accessor: 'numOfSources',
+    },
   ];
 
   private readonly cancerGenes = remoteData<CancerGene[]>({
     await: () => [],
     async invoke() {
-      return oncokbClient.utilsCancerGeneListGetUsingGET_1({});
+      return oncokbClient.utilsCancerGeneListGetUsingGET({});
     },
-    default: []
+    default: [],
   });
 
   private readonly annotatedGenes = remoteData<CuratedGene[]>({
@@ -361,7 +362,7 @@ export default class CancerGenesPage extends React.Component<{
     async invoke() {
       return oncokbClient.utilsAllCuratedGenesGetUsingGET({});
     },
-    default: []
+    default: [],
   });
 
   private readonly extendedCancerGene = remoteData<ExtendCancerGene[]>({
@@ -386,7 +387,7 @@ export default class CancerGenesPage extends React.Component<{
               'foundation',
               'foundationHeme',
               'vogelstein',
-              'sangerCGC'
+              'sangerCGC',
             ];
             cancerGenesAcc.push({
               ...cancerGene,
@@ -401,7 +402,7 @@ export default class CancerGenesPage extends React.Component<{
                 0
               ),
               geneType: getGeneType(cancerGene.oncogene, cancerGene.tsg),
-              annotated: !!annotatedGenes[cancerGene.entrezGeneId]
+              annotated: !!annotatedGenes[cancerGene.entrezGeneId],
             });
             return cancerGenesAcc;
           },
@@ -409,7 +410,7 @@ export default class CancerGenesPage extends React.Component<{
         )
       );
     },
-    default: []
+    default: [],
   });
 
   render() {
@@ -424,7 +425,7 @@ export default class CancerGenesPage extends React.Component<{
               <DownloadButtonWithPromise
                 fileName="cancerGeneList.tsv"
                 getDownloadData={() =>
-                  oncokbClient.utilsCancerGeneListTxtGetUsingGET_1({})
+                  oncokbClient.utilsCancerGeneListTxtGetUsingGET({})
                 }
                 buttonText="Cancer Gene List"
               />
@@ -453,24 +454,24 @@ export default class CancerGenesPage extends React.Component<{
                 data={this.extendedCancerGene.result}
                 columns={this.columns}
                 style={{
-                  height: LG_TABLE_FIXED_HEIGHT
+                  height: LG_TABLE_FIXED_HEIGHT,
                 }}
                 showPagination={true}
                 minRows={1}
                 loading={this.extendedCancerGene.isPending}
                 defaultSorted={[
                   {
+                    id: 'oncokbAnnotated',
+                    desc: true,
+                  },
+                  {
                     id: 'numOfSources',
-                    desc: true
+                    desc: true,
                   },
                   {
                     id: TABLE_COLUMN_KEY.HUGO_SYMBOL,
-                    desc: false
+                    desc: false,
                   },
-                  {
-                    id: 'oncokbAnnotated',
-                    desc: true
-                  }
                 ]}
               />
             </Col>

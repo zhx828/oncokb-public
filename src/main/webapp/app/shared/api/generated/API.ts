@@ -1,16 +1,6 @@
 import * as request from "superagent";
 
 type CallbackHandler = (err: any, res ? : request.Response) => void;
-export type AuditEvent = {
-    'data': {}
-
-    'principal': string
-
-        'timestamp': string
-
-        'type': string
-
-};
 export type KeyAndPasswordVM = {
     'key': string
 
@@ -28,7 +18,7 @@ export type LoginVM = {
 export type MailTypeInfo = {
     'description': string
 
-        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "TEST"
+        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "SEND_INTAKE_FORM_COMMERCIAL" | "SEND_INTAKE_FORM_RESEARCH_COMMERCIAL" | "SEND_INTAKE_FORM_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "APPROVAL_MSK_IN_COMMERCIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TEST"
 
 };
 export type ManagedUserVM = {
@@ -78,6 +68,10 @@ export type ManagedUserVM = {
 
         'resetKey': string
 
+        'tokenIsRenewable': boolean
+
+        'tokenValidDays': number
+
 };
 export type PasswordChangeDTO = {
     'currentPassword': string
@@ -93,6 +87,8 @@ export type Token = {
         'expiration': string
 
         'id': number
+
+        'renewable': boolean
 
         'token': string
 
@@ -188,7 +184,7 @@ export type UserDetailsDTO = {
 export type UserMailsDTO = {
     'id': number
 
-        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "TEST"
+        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "SEND_INTAKE_FORM_COMMERCIAL" | "SEND_INTAKE_FORM_RESEARCH_COMMERCIAL" | "SEND_INTAKE_FORM_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "APPROVAL_MSK_IN_COMMERCIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TEST"
 
         'sentBy': string
 
@@ -466,6 +462,82 @@ export default class API {
         $domain ? : string
     }): Promise < any > {
         return this.changePasswordUsingPOSTWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    resendVerificationUsingPOSTURL(parameters: {
+        'loginVm': LoginVM,
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/account/resend-verification';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * resendVerification
+     * @method
+     * @name API#resendVerificationUsingPOST
+     * @param {} loginVm - loginVM
+     */
+    resendVerificationUsingPOSTWithHttpInfo(parameters: {
+        'loginVm': LoginVM,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/account/resend-verification';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+            headers['Content-Type'] = 'application/json';
+
+            if (parameters['loginVm'] !== undefined) {
+                body = parameters['loginVm'];
+            }
+
+            if (parameters['loginVm'] === undefined) {
+                reject(new Error('Missing required  parameter: loginVm'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('POST', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * resendVerification
+     * @method
+     * @name API#resendVerificationUsingPOST
+     * @param {} loginVm - loginVM
+     */
+    resendVerificationUsingPOST(parameters: {
+        'loginVm': LoginVM,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < any > {
+        return this.resendVerificationUsingPOSTWithHttpInfo(parameters).then(function(response: request.Response) {
             return response.body;
         });
     };
@@ -1035,6 +1107,433 @@ export default class API {
             return response.body;
         });
     };
+    checkTrialAccountsUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/cronjob/check-trial-accounts';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * checkTrialAccounts
+     * @method
+     * @name API#checkTrialAccountsUsingGET
+     */
+    checkTrialAccountsUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/cronjob/check-trial-accounts';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * checkTrialAccounts
+     * @method
+     * @name API#checkTrialAccountsUsingGET
+     */
+    checkTrialAccountsUsingGET(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < any > {
+        return this.checkTrialAccountsUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    generateTokensUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/cronjob/generate-tokens';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * generateTokens
+     * @method
+     * @name API#generateTokensUsingGET
+     */
+    generateTokensUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/cronjob/generate-tokens';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * generateTokens
+     * @method
+     * @name API#generateTokensUsingGET
+     */
+    generateTokensUsingGET(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < any > {
+        return this.generateTokensUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    removeNotActivatedUsersUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/cronjob/remove-not-activate-users';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * removeNotActivatedUsers
+     * @method
+     * @name API#removeNotActivatedUsersUsingGET
+     */
+    removeNotActivatedUsersUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/cronjob/remove-not-activate-users';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * removeNotActivatedUsers
+     * @method
+     * @name API#removeNotActivatedUsersUsingGET
+     */
+    removeNotActivatedUsersUsingGET(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < any > {
+        return this.removeNotActivatedUsersUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    removeOldAuditEventsUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/cronjob/remove-old-audit-events';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * removeOldAuditEvents
+     * @method
+     * @name API#removeOldAuditEventsUsingGET
+     */
+    removeOldAuditEventsUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/cronjob/remove-old-audit-events';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * removeOldAuditEvents
+     * @method
+     * @name API#removeOldAuditEventsUsingGET
+     */
+    removeOldAuditEventsUsingGET(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < any > {
+        return this.removeOldAuditEventsUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    removeOldTokenStatsUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/cronjob/remove-old-token-stats';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * removeOldTokenStats
+     * @method
+     * @name API#removeOldTokenStatsUsingGET
+     */
+    removeOldTokenStatsUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/cronjob/remove-old-token-stats';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * removeOldTokenStats
+     * @method
+     * @name API#removeOldTokenStatsUsingGET
+     */
+    removeOldTokenStatsUsingGET(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < any > {
+        return this.removeOldTokenStatsUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    tokensRenewCheckUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/cronjob/renew-tokens';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * tokensRenewCheck
+     * @method
+     * @name API#tokensRenewCheckUsingGET
+     */
+    tokensRenewCheckUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/cronjob/renew-tokens';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * tokensRenewCheck
+     * @method
+     * @name API#tokensRenewCheckUsingGET
+     */
+    tokensRenewCheckUsingGET(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < any > {
+        return this.tokensRenewCheckUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    updateTokenStatsUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/cronjob/update-token-stats';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * updateTokenStats
+     * @method
+     * @name API#updateTokenStatsUsingGET
+     */
+    updateTokenStatsUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/cronjob/update-token-stats';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * updateTokenStats
+     * @method
+     * @name API#updateTokenStatsUsingGET
+     */
+    updateTokenStatsUsingGET(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < any > {
+        return this.updateTokenStatsUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
     getMailsFromUsingGETURL(parameters: {
         $queryParameters ? : any
     }): string {
@@ -1180,7 +1679,7 @@ export default class API {
         'by': string,
         'cc' ? : string,
         'from': string,
-        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "TEST",
+        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "SEND_INTAKE_FORM_COMMERCIAL" | "SEND_INTAKE_FORM_RESEARCH_COMMERCIAL" | "SEND_INTAKE_FORM_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "APPROVAL_MSK_IN_COMMERCIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TEST",
         'to': string,
         $queryParameters ? : any
     }): string {
@@ -1230,7 +1729,7 @@ export default class API {
         'by': string,
         'cc' ? : string,
         'from': string,
-        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "TEST",
+        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "SEND_INTAKE_FORM_COMMERCIAL" | "SEND_INTAKE_FORM_RESEARCH_COMMERCIAL" | "SEND_INTAKE_FORM_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "APPROVAL_MSK_IN_COMMERCIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TEST",
         'to': string,
         $queryParameters ? : any,
         $domain ? : string
@@ -1313,7 +1812,7 @@ export default class API {
         'by': string,
         'cc' ? : string,
         'from': string,
-        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "TEST",
+        'mailType': "ACTIVATION" | "APPROVAL" | "CREATION" | "PASSWORD_RESET" | "LICENSE_REVIEW_COMMERCIAL" | "LICENSE_REVIEW_RESEARCH_COMMERCIAL" | "LICENSE_REVIEW_HOSPITAL" | "SEND_INTAKE_FORM_COMMERCIAL" | "SEND_INTAKE_FORM_RESEARCH_COMMERCIAL" | "SEND_INTAKE_FORM_HOSPITAL" | "CLARIFY_ACADEMIC_FOR_PROFIT" | "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL" | "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES" | "APPROVAL_MSK_IN_COMMERCIAL" | "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE" | "TEST",
         'to': string,
         $queryParameters ? : any,
         $domain ? : string
@@ -1395,6 +1894,370 @@ export default class API {
         $domain ? : string
     }): Promise < any > {
         return this.registerAccountUsingPOSTWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    getAllTokensUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/tokens';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * getAllTokens
+     * @method
+     * @name API#getAllTokensUsingGET
+     */
+    getAllTokensUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/tokens';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * getAllTokens
+     * @method
+     * @name API#getAllTokensUsingGET
+     */
+    getAllTokensUsingGET(parameters: {
+            $queryParameters ? : any,
+                $domain ? : string
+        }): Promise < Array < Token >
+        > {
+            return this.getAllTokensUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+                return response.body;
+            });
+        };
+    createTokenUsingPOST_1URL(parameters: {
+        'token': Token,
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/tokens';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * createToken
+     * @method
+     * @name API#createTokenUsingPOST_1
+     * @param {} token - token
+     */
+    createTokenUsingPOST_1WithHttpInfo(parameters: {
+        'token': Token,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/tokens';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+            headers['Content-Type'] = 'application/json';
+
+            if (parameters['token'] !== undefined) {
+                body = parameters['token'];
+            }
+
+            if (parameters['token'] === undefined) {
+                reject(new Error('Missing required  parameter: token'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('POST', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * createToken
+     * @method
+     * @name API#createTokenUsingPOST_1
+     * @param {} token - token
+     */
+    createTokenUsingPOST_1(parameters: {
+        'token': Token,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < Token > {
+        return this.createTokenUsingPOST_1WithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    updateTokenUsingPUTURL(parameters: {
+        'token': Token,
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/tokens';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * updateToken
+     * @method
+     * @name API#updateTokenUsingPUT
+     * @param {} token - token
+     */
+    updateTokenUsingPUTWithHttpInfo(parameters: {
+        'token': Token,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/tokens';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+            headers['Content-Type'] = 'application/json';
+
+            if (parameters['token'] !== undefined) {
+                body = parameters['token'];
+            }
+
+            if (parameters['token'] === undefined) {
+                reject(new Error('Missing required  parameter: token'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('PUT', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * updateToken
+     * @method
+     * @name API#updateTokenUsingPUT
+     * @param {} token - token
+     */
+    updateTokenUsingPUT(parameters: {
+        'token': Token,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < Token > {
+        return this.updateTokenUsingPUTWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    getTokenUsingGETURL(parameters: {
+        'id': number,
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/tokens/{id}';
+
+        path = path.replace('{id}', parameters['id'] + '');
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * getToken
+     * @method
+     * @name API#getTokenUsingGET
+     * @param {integer} id - id
+     */
+    getTokenUsingGETWithHttpInfo(parameters: {
+        'id': number,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/tokens/{id}';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            path = path.replace('{id}', parameters['id'] + '');
+
+            if (parameters['id'] === undefined) {
+                reject(new Error('Missing required  parameter: id'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * getToken
+     * @method
+     * @name API#getTokenUsingGET
+     * @param {integer} id - id
+     */
+    getTokenUsingGET(parameters: {
+        'id': number,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < Token > {
+        return this.getTokenUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    deleteTokenUsingDELETE_1URL(parameters: {
+        'id': number,
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/tokens/{id}';
+
+        path = path.replace('{id}', parameters['id'] + '');
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * deleteToken
+     * @method
+     * @name API#deleteTokenUsingDELETE_1
+     * @param {integer} id - id
+     */
+    deleteTokenUsingDELETE_1WithHttpInfo(parameters: {
+        'id': number,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/tokens/{id}';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            path = path.replace('{id}', parameters['id'] + '');
+
+            if (parameters['id'] === undefined) {
+                reject(new Error('Missing required  parameter: id'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('DELETE', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * deleteToken
+     * @method
+     * @name API#deleteTokenUsingDELETE_1
+     * @param {integer} id - id
+     */
+    deleteTokenUsingDELETE_1(parameters: {
+        'id': number,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < any > {
+        return this.deleteTokenUsingDELETE_1WithHttpInfo(parameters).then(function(response: request.Response) {
             return response.body;
         });
     };
@@ -2167,7 +3030,7 @@ export default class API {
             });
         };
     createUserUsingPOSTURL(parameters: {
-        'userDto': UserDTO,
+        'managedUserVm': ManagedUserVM,
         $queryParameters ? : any
     }): string {
         let queryParameters: any = {};
@@ -2187,10 +3050,10 @@ export default class API {
      * createUser
      * @method
      * @name API#createUserUsingPOST
-     * @param {} userDto - userDTO
+     * @param {} managedUserVm - managedUserVM
      */
     createUserUsingPOSTWithHttpInfo(parameters: {
-        'userDto': UserDTO,
+        'managedUserVm': ManagedUserVM,
         $queryParameters ? : any,
         $domain ? : string
     }): Promise < request.Response > {
@@ -2206,12 +3069,12 @@ export default class API {
             headers['Accept'] = '*/*';
             headers['Content-Type'] = 'application/json';
 
-            if (parameters['userDto'] !== undefined) {
-                body = parameters['userDto'];
+            if (parameters['managedUserVm'] !== undefined) {
+                body = parameters['managedUserVm'];
             }
 
-            if (parameters['userDto'] === undefined) {
-                reject(new Error('Missing required  parameter: userDto'));
+            if (parameters['managedUserVm'] === undefined) {
+                reject(new Error('Missing required  parameter: managedUserVm'));
                 return;
             }
 
@@ -2231,10 +3094,10 @@ export default class API {
      * createUser
      * @method
      * @name API#createUserUsingPOST
-     * @param {} userDto - userDTO
+     * @param {} managedUserVm - managedUserVM
      */
     createUserUsingPOST(parameters: {
-        'userDto': UserDTO,
+        'managedUserVm': ManagedUserVM,
         $queryParameters ? : any,
         $domain ? : string
     }): Promise < User > {
@@ -2738,70 +3601,14 @@ export default class API {
             return response.body;
         });
     };
-    getByDatesUsingGETURL(parameters: {
-        'fromDate': string,
-        'offset' ? : number,
-        'page' ? : number,
-        'pageNumber' ? : number,
-        'pageSize' ? : number,
-        'paged' ? : boolean,
-        'size' ? : number,
-        'sort' ? : Array < string > ,
-        'sortSorted' ? : boolean,
-        'sortUnsorted' ? : boolean,
-        'toDate': string,
-        'unpaged' ? : boolean,
+    getUserTokensUsingGETURL(parameters: {
+        'login': string,
         $queryParameters ? : any
     }): string {
         let queryParameters: any = {};
-        let path = '/management/audits';
-        if (parameters['fromDate'] !== undefined) {
-            queryParameters['fromDate'] = parameters['fromDate'];
-        }
+        let path = '/api/users/{login}/tokens';
 
-        if (parameters['offset'] !== undefined) {
-            queryParameters['offset'] = parameters['offset'];
-        }
-
-        if (parameters['page'] !== undefined) {
-            queryParameters['page'] = parameters['page'];
-        }
-
-        if (parameters['pageNumber'] !== undefined) {
-            queryParameters['pageNumber'] = parameters['pageNumber'];
-        }
-
-        if (parameters['pageSize'] !== undefined) {
-            queryParameters['pageSize'] = parameters['pageSize'];
-        }
-
-        if (parameters['paged'] !== undefined) {
-            queryParameters['paged'] = parameters['paged'];
-        }
-
-        if (parameters['size'] !== undefined) {
-            queryParameters['size'] = parameters['size'];
-        }
-
-        if (parameters['sort'] !== undefined) {
-            queryParameters['sort'] = parameters['sort'];
-        }
-
-        if (parameters['sortSorted'] !== undefined) {
-            queryParameters['sort.sorted'] = parameters['sortSorted'];
-        }
-
-        if (parameters['sortUnsorted'] !== undefined) {
-            queryParameters['sort.unsorted'] = parameters['sortUnsorted'];
-        }
-
-        if (parameters['toDate'] !== undefined) {
-            queryParameters['toDate'] = parameters['toDate'];
-        }
-
-        if (parameters['unpaged'] !== undefined) {
-            queryParameters['unpaged'] = parameters['unpaged'];
-        }
+        path = path.replace('{login}', parameters['login'] + '');
 
         if (parameters.$queryParameters) {
             Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
@@ -2814,42 +3621,20 @@ export default class API {
     };
 
     /**
-     * getByDates
+     * getUserTokens
      * @method
-     * @name API#getByDatesUsingGET
-     * @param {string} fromDate - fromDate
-     * @param {integer} offset - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {integer} page - Page number of the requested page
-     * @param {integer} pageNumber - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {integer} pageSize - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {boolean} paged - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {integer} size - Size of a page
-     * @param {array} sort - Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-     * @param {boolean} sortSorted - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {boolean} sortUnsorted - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {string} toDate - toDate
-     * @param {boolean} unpaged - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
+     * @name API#getUserTokensUsingGET
+     * @param {string} login - login
      */
-    getByDatesUsingGETWithHttpInfo(parameters: {
-        'fromDate': string,
-        'offset' ? : number,
-        'page' ? : number,
-        'pageNumber' ? : number,
-        'pageSize' ? : number,
-        'paged' ? : boolean,
-        'size' ? : number,
-        'sort' ? : Array < string > ,
-        'sortSorted' ? : boolean,
-        'sortUnsorted' ? : boolean,
-        'toDate': string,
-        'unpaged' ? : boolean,
+    getUserTokensUsingGETWithHttpInfo(parameters: {
+        'login': string,
         $queryParameters ? : any,
         $domain ? : string
     }): Promise < request.Response > {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         const errorHandlers = this.errorHandlers;
         const request = this.request;
-        let path = '/management/audits';
+        let path = '/api/users/{login}/tokens';
         let body: any;
         let queryParameters: any = {};
         let headers: any = {};
@@ -2857,62 +3642,11 @@ export default class API {
         return new Promise(function(resolve, reject) {
             headers['Accept'] = '*/*';
 
-            if (parameters['fromDate'] !== undefined) {
-                queryParameters['fromDate'] = parameters['fromDate'];
-            }
+            path = path.replace('{login}', parameters['login'] + '');
 
-            if (parameters['fromDate'] === undefined) {
-                reject(new Error('Missing required  parameter: fromDate'));
+            if (parameters['login'] === undefined) {
+                reject(new Error('Missing required  parameter: login'));
                 return;
-            }
-
-            if (parameters['offset'] !== undefined) {
-                queryParameters['offset'] = parameters['offset'];
-            }
-
-            if (parameters['page'] !== undefined) {
-                queryParameters['page'] = parameters['page'];
-            }
-
-            if (parameters['pageNumber'] !== undefined) {
-                queryParameters['pageNumber'] = parameters['pageNumber'];
-            }
-
-            if (parameters['pageSize'] !== undefined) {
-                queryParameters['pageSize'] = parameters['pageSize'];
-            }
-
-            if (parameters['paged'] !== undefined) {
-                queryParameters['paged'] = parameters['paged'];
-            }
-
-            if (parameters['size'] !== undefined) {
-                queryParameters['size'] = parameters['size'];
-            }
-
-            if (parameters['sort'] !== undefined) {
-                queryParameters['sort'] = parameters['sort'];
-            }
-
-            if (parameters['sortSorted'] !== undefined) {
-                queryParameters['sort.sorted'] = parameters['sortSorted'];
-            }
-
-            if (parameters['sortUnsorted'] !== undefined) {
-                queryParameters['sort.unsorted'] = parameters['sortUnsorted'];
-            }
-
-            if (parameters['toDate'] !== undefined) {
-                queryParameters['toDate'] = parameters['toDate'];
-            }
-
-            if (parameters['toDate'] === undefined) {
-                reject(new Error('Missing required  parameter: toDate'));
-                return;
-            }
-
-            if (parameters['unpaged'] !== undefined) {
-                queryParameters['unpaged'] = parameters['unpaged'];
             }
 
             if (parameters.$queryParameters) {
@@ -2928,116 +3662,19 @@ export default class API {
     };
 
     /**
-     * getByDates
+     * getUserTokens
      * @method
-     * @name API#getByDatesUsingGET
-     * @param {string} fromDate - fromDate
-     * @param {integer} offset - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {integer} page - Page number of the requested page
-     * @param {integer} pageNumber - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {integer} pageSize - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {boolean} paged - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {integer} size - Size of a page
-     * @param {array} sort - Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-     * @param {boolean} sortSorted - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {boolean} sortUnsorted - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
-     * @param {string} toDate - toDate
-     * @param {boolean} unpaged - OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
+     * @name API#getUserTokensUsingGET
+     * @param {string} login - login
      */
-    getByDatesUsingGET(parameters: {
-            'fromDate': string,
-            'offset' ? : number,
-            'page' ? : number,
-            'pageNumber' ? : number,
-            'pageSize' ? : number,
-            'paged' ? : boolean,
-            'size' ? : number,
-            'sort' ? : Array < string > ,
-            'sortSorted' ? : boolean,
-            'sortUnsorted' ? : boolean,
-            'toDate': string,
-            'unpaged' ? : boolean,
+    getUserTokensUsingGET(parameters: {
+            'login': string,
             $queryParameters ? : any,
             $domain ? : string
-        }): Promise < Array < AuditEvent >
+        }): Promise < Array < Token >
         > {
-            return this.getByDatesUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return this.getUserTokensUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
                 return response.body;
             });
         };
-    getUsingGETURL(parameters: {
-        'id': number,
-        $queryParameters ? : any
-    }): string {
-        let queryParameters: any = {};
-        let path = '/management/audits/{id}';
-
-        path = path.replace('{id}', parameters['id'] + '');
-
-        if (parameters.$queryParameters) {
-            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
-                var parameter = parameters.$queryParameters[parameterName];
-                queryParameters[parameterName] = parameter;
-            });
-        }
-        let keys = Object.keys(queryParameters);
-        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
-    };
-
-    /**
-     * get
-     * @method
-     * @name API#getUsingGET
-     * @param {integer} id - id
-     */
-    getUsingGETWithHttpInfo(parameters: {
-        'id': number,
-        $queryParameters ? : any,
-        $domain ? : string
-    }): Promise < request.Response > {
-        const domain = parameters.$domain ? parameters.$domain : this.domain;
-        const errorHandlers = this.errorHandlers;
-        const request = this.request;
-        let path = '/management/audits/{id}';
-        let body: any;
-        let queryParameters: any = {};
-        let headers: any = {};
-        let form: any = {};
-        return new Promise(function(resolve, reject) {
-            headers['Accept'] = '*/*';
-
-            path = path.replace('{id}', parameters['id'] + '');
-
-            if (parameters['id'] === undefined) {
-                reject(new Error('Missing required  parameter: id'));
-                return;
-            }
-
-            if (parameters.$queryParameters) {
-                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
-                    var parameter = parameters.$queryParameters[parameterName];
-                    queryParameters[parameterName] = parameter;
-                });
-            }
-
-            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
-
-        });
-    };
-
-    /**
-     * get
-     * @method
-     * @name API#getUsingGET
-     * @param {integer} id - id
-     */
-    getUsingGET(parameters: {
-        'id': number,
-        $queryParameters ? : any,
-        $domain ? : string
-    }): Promise < AuditEvent > {
-        return this.getUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
-            return response.body;
-        });
-    };
 }

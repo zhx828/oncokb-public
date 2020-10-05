@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.mskcc.cbio.oncokb.domain.enumeration.ProjectProfile;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
  */
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
+    private String name;
     private String apiProxyUrl;
     private String userRegistrationWebhook;
     private ProjectProfile profile;
@@ -23,11 +25,21 @@ public class ApplicationProperties {
     private RedisProperties redis;
     private String accountApprovalWhitelist;
     private String academicEmailClarifyDomain;
+    private String licensedDomains;
     private String googleWebmasterVerification;
     private EmailAddresses emailAddresses;
     private String tokenUsageCheck;
     private String tokenUsageCheckWhitelist;
     private int publicWebsiteApiThreshold;
+    private FrontendProperties frontend;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getApiProxyUrl() {
         return apiProxyUrl;
@@ -59,6 +71,14 @@ public class ApplicationProperties {
 
     public void setAcademicEmailClarifyDomain(String academicEmailClarifyDomain) {
         this.academicEmailClarifyDomain = academicEmailClarifyDomain;
+    }
+
+    public String getLicensedDomains() {
+        return licensedDomains;
+    }
+
+    public void setLicensedDomains(String licensedDomains) {
+        this.licensedDomains = licensedDomains;
     }
 
     public ProjectProfile getProfile() {
@@ -125,11 +145,26 @@ public class ApplicationProperties {
         this.publicWebsiteApiThreshold = publicWebsiteApiThreshold;
     }
 
+    public FrontendProperties getFrontend() {
+        return frontend;
+    }
+
+    public void setFrontend(FrontendProperties frontend) {
+        this.frontend = frontend;
+    }
+
     public List<String> getAcademicEmailClarifyDomains() {
         return getDomains(this.getAcademicEmailClarifyDomain());
     }
 
+    public List<String> getLicensedDomainsList() {
+        return getDomains(this.getLicensedDomains());
+    }
+
     private List<String> getDomains(String domainStr) {
+        if (StringUtils.isEmpty(domainStr)) {
+            return new ArrayList<>();
+        }
         return Arrays.stream(domainStr.split(",")).map(domain -> domain.trim()).filter(domain -> !StringUtils.isEmpty(domain)).collect(Collectors.toList());
     }
 }

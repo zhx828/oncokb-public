@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.mail.MessagingException;
+import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -86,6 +88,19 @@ public class ApiProxy {
         return restTemplate.exchange(uri, method, new HttpEntity<>(body, httpHeaders), String.class).getBody();
     }
 
+    @RequestMapping("/private/utils/data/sqlDump")
+    public ResponseEntity<byte[]> proxyDataReleaseDownload(@RequestBody(required = false) String body, HttpMethod method, HttpServletRequest request)
+        throws URISyntaxException {
+        URI uri = apiProxyService.prepareURI(request);
+        updateTokenStats(request, 1);
+
+        HttpHeaders httpHeaders = apiProxyService.prepareHttpHeaders(request.getContentType());
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(
+            new ByteArrayHttpMessageConverter());
+        return restTemplate.exchange(uri, method, new HttpEntity<>(body, httpHeaders), byte[].class);
+    }
+
     @Async
     public void updatePublicWebsiteUsage(String body, HttpMethod method) {
         Optional<String> userOptional = SecurityUtils.getCurrentUserLogin();
@@ -96,7 +111,6 @@ public class ApiProxy {
                 List<Token> tokenList = tokenProvider.getUserTokens(user.get());
                 int usageCount = getUsageCount(body, method);
                 tokenList.forEach(token -> {
-                    tokenService.increaseTokenUsage(token.getId(), usageCount);
                     // Check the current public website token usage
                     // Send email if the token usage beyonds the threshold
                     // This is not guaranteed to be triggered if the request is a post and total passes the cutoff
@@ -149,7 +163,6 @@ public class ApiProxy {
                 !tokenUsageCheckWhitelist.contains(user.get().getLogin())) {
                 List<Token> tokenList = tokenProvider.getUserTokens(user.get());
                 tokenList.forEach(token -> {
-                    tokenService.increaseTokenUsage(token.getId(), usageCount);
                     if (uuidOptional.isPresent() && uuidOptional.get().equals(token.getToken())) {
                         TokenStats tokenStats = new TokenStats();
                         tokenStats.setToken(token);
@@ -161,6 +174,7 @@ public class ApiProxy {
                             tokenStats.setAccessIp(ipAddress);
                         }
                         tokenStats.setAccessTime(Instant.now());
+                        tokenStats.setUsageCount(usageCount);
                         tokenStats.setResource(request.getMethod() + " " + request.getRequestURI());
                         tokenStatsService.save(tokenStats);
                     }

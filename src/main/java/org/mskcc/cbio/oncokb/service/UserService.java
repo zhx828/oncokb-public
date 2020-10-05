@@ -2,7 +2,9 @@ package org.mskcc.cbio.oncokb.service;
 
 import io.github.jhipster.config.JHipsterProperties;
 import org.mskcc.cbio.oncokb.config.Constants;
+import org.mskcc.cbio.oncokb.config.cache.CacheNameResolver;
 import org.mskcc.cbio.oncokb.domain.Authority;
+import org.mskcc.cbio.oncokb.domain.Token;
 import org.mskcc.cbio.oncokb.domain.User;
 import org.mskcc.cbio.oncokb.domain.UserDetails;
 import org.mskcc.cbio.oncokb.domain.enumeration.LicenseType;
@@ -11,6 +13,7 @@ import org.mskcc.cbio.oncokb.repository.UserDetailsRepository;
 import org.mskcc.cbio.oncokb.repository.UserRepository;
 import org.mskcc.cbio.oncokb.security.AuthoritiesConstants;
 import org.mskcc.cbio.oncokb.security.SecurityUtils;
+import org.mskcc.cbio.oncokb.security.uuid.TokenProvider;
 import org.mskcc.cbio.oncokb.service.dto.UserDTO;
 import org.mskcc.cbio.oncokb.service.mapper.UserMapper;
 
@@ -27,10 +30,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.mskcc.cbio.oncokb.config.Constants.DAY_IN_SECONDS;
+import static org.mskcc.cbio.oncokb.config.Constants.HALF_YEAR_IN_SECONDS;
+import static org.mskcc.cbio.oncokb.config.cache.UserCacheResolver.USERS_BY_EMAIL_CACHE;
+import static org.mskcc.cbio.oncokb.config.cache.UserCacheResolver.USERS_BY_LOGIN_CACHE;
 
 /**
  * Service class for managing users.
@@ -51,7 +60,13 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
+    private final CacheNameResolver cacheNameResolver;
+
     private final JHipsterProperties jHipsterProperties;
+
+    private final TokenService tokenService;
+
+    private final TokenProvider tokenProvider;
 
     @Autowired
     private UserMapper userMapper;
@@ -62,6 +77,9 @@ public class UserService {
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
         JHipsterProperties jHipsterProperties,
+        TokenService tokenService,
+        TokenProvider tokenProvider,
+        CacheNameResolver cacheNameResolver,
         CacheManager cacheManager
     ) {
         this.userRepository = userRepository;
@@ -69,6 +87,9 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.jHipsterProperties = jHipsterProperties;
+        this.tokenService = tokenService;
+        this.tokenProvider = tokenProvider;
+        this.cacheNameResolver = cacheNameResolver;
         this.cacheManager = cacheManager;
     }
 
@@ -172,7 +193,7 @@ public class UserService {
         return true;
     }
 
-    public User createUser(UserDTO userDTO) {
+    public User createUser(UserDTO userDTO, Optional<Integer> tokenValidDays, Optional<Boolean> tokenIsRenewable) {
         User user = new User();
         user.setLogin(userDTO.getLogin().toLowerCase());
         user.setFirstName(userDTO.getFirstName());
@@ -199,8 +220,20 @@ public class UserService {
                 .collect(Collectors.toSet());
             user.setAuthorities(authorities);
         }
-        userRepository.save(user);
+        User updatedUser = userRepository.save(user);
+
+        UserDetails userDetails = new UserDetails();
+        userDetails.setUser(user);
+        userDetails.setLicenseType(userDTO.getLicenseType());
+        userDetails.setJobTitle(userDTO.getJobTitle());
+        userDetails.setCompany(userDTO.getCompany());
+        userDetails.setCity(userDTO.getCity());
+        userDetails.setCountry(userDTO.getCountry());
+        userDetailsRepository.save(userDetails);
+
         this.clearUserCaches(user);
+
+        generateTokenForUserIfNotExist(userMapper.userToUserDTO(updatedUser), tokenValidDays, tokenIsRenewable);
         log.debug("Created Information for User: {}", user);
         return user;
     }
@@ -250,7 +283,7 @@ public class UserService {
      * @return updated user.
      */
     public Optional<UserDTO> updateUser(UserDTO userDTO) {
-        return Optional.of(userRepository
+        Optional<UserDTO> updatedUserDTO = Optional.of(userRepository
             .findById(userDTO.getId()))
             .filter(Optional::isPresent)
             .map(Optional::get)
@@ -278,6 +311,11 @@ public class UserService {
                 return new UserDTO(user, getUpdatedUserDetails(
                     user, userDTO.getLicenseType(), userDTO.getJobTitle(), userDTO.getCompany(), userDTO.getCity(), userDTO.getCountry()));
             });
+
+        if (updatedUserDTO.isPresent()) {
+            generateTokenForUserIfNotExist(updatedUserDTO.get(), Optional.empty(), Optional.empty());
+        }
+        return updatedUserDTO;
     }
 
     private UserDetails getUpdatedUserDetails(User user, LicenseType licenseType, String jobTitle, String company, String city, String country) {
@@ -310,6 +348,7 @@ public class UserService {
         });
     }
 
+    @Transactional
     public void changePassword(String currentClearTextPassword, String newPassword) {
         SecurityUtils.getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
@@ -336,11 +375,6 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthorities(Long id) {
-        return userRepository.findOneWithAuthoritiesById(id);
-    }
-
-    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities() {
         return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
     }
@@ -352,7 +386,34 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<UserDTO> getAllRegisteredUsers(Pageable pageable) {
-        return userRepository.findAllByActivationKeyIsNullOrderByCreatedDate(pageable).map(user -> userMapper.userToUserDTO(user));
+        return userRepository.findAllByActivatedIsTrueOrderByCreatedBy(pageable).map(user -> userMapper.userToUserDTO(user));
+    }
+
+    public Optional<UserDTO> approveUser(UserDTO userDTO) {
+        if (!userDTO.isActivated()) {
+            userDTO.setActivated(true);
+        }
+        Optional<UserDTO> updatedUserDTO = updateUser(userDTO);
+        if (updatedUserDTO.isPresent()) {
+            generateTokenForUserIfNotExist(updatedUserDTO.get(), Optional.empty(), Optional.empty());
+        }
+        return updatedUserDTO;
+    }
+
+    private void generateTokenForUserIfNotExist(UserDTO userDTO, Optional<Integer> tokenValidDays, Optional<Boolean> tokenIsRenewable) {
+        // automatically generate a token for user if not exists
+        List<Token> tokens = tokenService.findByUser(userMapper.userDTOToUser(userDTO));
+        if (tokens.isEmpty()) {
+            tokenProvider.createToken(
+                userMapper.userDTOToUser(userDTO),
+                tokenValidDays.isPresent() ? Optional.of(Instant.now().plusSeconds(DAY_IN_SECONDS * (long) tokenValidDays.get())) : Optional.empty(),
+                tokenIsRenewable
+            );
+        }
+    }
+
+    public List<UserDTO> getAllActivatedUsersWithoutTokens() {
+        return userRepository.findAllActivatedWithoutTokens().stream().map(user->userMapper.userToUserDTO(user)).collect(Collectors.toList());
     }
 
     public void removeNotActivatedUsers() {
@@ -373,15 +434,16 @@ public class UserService {
      * Gets a list of all the authorities.
      * @return a list of all the authorities.
      */
+    @Transactional(readOnly = true)
     public List<String> getAuthorities() {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
 
     private void clearUserCaches(User user) {
-        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
+        Objects.requireNonNull(cacheManager.getCache(this.cacheNameResolver.getCacheName(USERS_BY_LOGIN_CACHE))).evict(user.getLogin());
         if (user.getEmail() != null) {
-            Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
+            Objects.requireNonNull(cacheManager.getCache(this.cacheNameResolver.getCacheName(USERS_BY_EMAIL_CACHE))).evict(user.getEmail());
         }
     }
 }

@@ -9,7 +9,6 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -18,7 +17,6 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "token")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Token implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,11 +42,15 @@ public class Token implements Serializable {
     @Column(name = "current_usage", nullable = false)
     private Integer currentUsage = 0;
 
+    @NotNull
+    @Column(name = "renewable", nullable = false)
+    private Boolean renewable = true;
+
     @ManyToOne
-    @JsonIgnoreProperties("tokens")
+    @JsonIgnoreProperties(value = "tokens", allowSetters = true)
     private User user;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
     }
@@ -122,6 +124,19 @@ public class Token implements Serializable {
         this.currentUsage = currentUsage;
     }
 
+    public Boolean isRenewable() {
+        return renewable;
+    }
+
+    public Token renewable(Boolean renewable) {
+        this.renewable = renewable;
+        return this;
+    }
+
+    public void setRenewable(Boolean renewable) {
+        this.renewable = renewable;
+    }
+
     public User getUser() {
         return user;
     }
@@ -134,7 +149,7 @@ public class Token implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -152,6 +167,7 @@ public class Token implements Serializable {
         return 31;
     }
 
+    // prettier-ignore
     @Override
     public String toString() {
         return "Token{" +
@@ -161,6 +177,7 @@ public class Token implements Serializable {
             ", expiration='" + getExpiration() + "'" +
             ", usageLimit=" + getUsageLimit() +
             ", currentUsage=" + getCurrentUsage() +
+            ", renewable='" + isRenewable() + "'" +
             "}";
     }
 }

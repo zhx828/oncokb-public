@@ -28,6 +28,7 @@ public interface TokenService {
      */
     List<Token> findAll();
 
+
     /**
      * Get the "id" token.
      *
@@ -35,6 +36,8 @@ public interface TokenService {
      * @return the entity.
      */
     Optional<Token> findOne(Long id);
+
+    Optional<Token> findPublicWebsiteToken();
 
     Optional<Token> findByToken(UUID token);
 

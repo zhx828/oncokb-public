@@ -9,12 +9,12 @@ import {
   ONCOKB_CONTACT_EMAIL,
   ONCOKB_NEWS_GROUP_SUBSCRIPTION_LINK,
   PAGE_ROUTE,
-  SOP_LINK
+  SOP_LINK,
 } from 'app/config/constants';
 import { Link } from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
 import LevelChange from 'content/images/loe-change.png';
-import JCS_IMAGE from 'content/images/level_JCS.png';
+import AAC_IMAGE from 'content/images/level_AAC.png';
 import { Linkout } from 'app/shared/links/Linkout';
 import { RouterStore } from 'mobx-react-router';
 import { scrollWidthOffsetInNews } from 'app/shared/utils/Utils';
@@ -77,6 +77,11 @@ export default class NewsPage extends React.Component<{
             <CitationText />
           </div>
           <div className="mt-2">
+            <NewsList date={'09172020'} />
+            <NewsList date={'08282020'} />
+            <NewsList date={'07232020'} />
+            <NewsList date={'07092020'} />
+            <NewsList date={'06092020'} />
             <NewsList date={'05112020'} />
             <NewsList date={'04242020'}>
               <ul>
@@ -99,7 +104,7 @@ export default class NewsPage extends React.Component<{
                 <li>
                   We now show a comparison between the OncoKB and AMP/ASCO/CAP
                   Levels of Evidence on the{' '}
-                  <Link to={`${PAGE_ROUTE.LEVELS}#version=${Version.JCS}`}>
+                  <Link to={`${PAGE_ROUTE.LEVELS}#version=${Version.AAC}`}>
                     Levels of Evidence
                   </Link>{' '}
                   page.
@@ -107,7 +112,7 @@ export default class NewsPage extends React.Component<{
                 <img
                   className="md-auto"
                   style={{ maxWidth: IMG_MAX_WIDTH }}
-                  src={JCS_IMAGE}
+                  src={AAC_IMAGE}
                 />
               </ul>
             </NewsList>
@@ -190,7 +195,7 @@ export default class NewsPage extends React.Component<{
               <ul>
                 {getNews({
                   key: 'news-08172017',
-                  content: NEWS_BY_DATE['08172017'].news
+                  content: NEWS_BY_DATE['08172017'].news,
                 })}
               </ul>
             </div>
@@ -212,7 +217,7 @@ export default class NewsPage extends React.Component<{
               <ul>
                 {getNews({
                   key: 'news-07062016',
-                  content: NEWS_BY_DATE['07062016'].news
+                  content: NEWS_BY_DATE['07062016'].news,
                 })}
               </ul>
             </div>

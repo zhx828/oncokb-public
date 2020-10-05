@@ -3,6 +3,7 @@ package org.mskcc.cbio.oncokb.repository;
 import org.mskcc.cbio.oncokb.domain.Token;
 import org.mskcc.cbio.oncokb.domain.User;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -28,7 +29,12 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     @Query("select token from Token token where token.expiration < ?1")
     List<Token> findAllExpiresBeforeDate(Instant date);
 
+    @Query("select token from Token token where token.user.login = org.mskcc.cbio.oncokb.config.Constants.PUBLIC_WEBSITE_LOGIN")
+    Optional<Token> findPublicWebsiteToken();
+
+    @Cacheable(cacheResolver = "tokenCacheResolver")
     Optional<Token> findByToken(UUID token);
 
+    @Cacheable(cacheResolver = "tokenCacheResolver")
     List<Token> findByUser(User user);
 }

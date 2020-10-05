@@ -1,19 +1,25 @@
 package org.mskcc.cbio.oncokb.service.impl;
 
+import org.mskcc.cbio.oncokb.config.cache.CacheNameResolver;
 import org.mskcc.cbio.oncokb.domain.Token;
 import org.mskcc.cbio.oncokb.domain.User;
 import org.mskcc.cbio.oncokb.repository.TokenRepository;
 import org.mskcc.cbio.oncokb.service.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static org.mskcc.cbio.oncokb.config.cache.TokenCacheResolver.TOKENS_BY_USER_CACHE;
+import static org.mskcc.cbio.oncokb.config.cache.TokenCacheResolver.TOKEN_BY_UUID_CACHE;
 
 /**
  * Service Implementation for managing {@link Token}.
@@ -26,8 +32,15 @@ public class TokenServiceImpl implements TokenService {
 
     private final TokenRepository tokenRepository;
 
-    public TokenServiceImpl(TokenRepository tokenRepository) {
+    private final CacheManager cacheManager;
+
+    private final CacheNameResolver cacheNameResolver;
+
+
+    public TokenServiceImpl(TokenRepository tokenRepository, CacheManager cacheManager,  CacheNameResolver cacheNameResolver) {
         this.tokenRepository = tokenRepository;
+        this.cacheManager = cacheManager;
+        this.cacheNameResolver = cacheNameResolver;
     }
 
     /**
@@ -39,7 +52,10 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Token save(Token token) {
         log.debug("Request to save Token : {}", token);
-        return tokenRepository.save(token);
+
+        Token updatedToken =  tokenRepository.save(token);
+        this.clearTokenCaches(token);
+        return updatedToken;
     }
 
     /**
@@ -54,6 +70,7 @@ public class TokenServiceImpl implements TokenService {
         return tokenRepository.findAll();
     }
 
+
     /**
      * Get one token by id.
      *
@@ -67,6 +84,10 @@ public class TokenServiceImpl implements TokenService {
         return tokenRepository.findById(id);
     }
 
+    @Override
+    public Optional<Token> findPublicWebsiteToken() {
+        return tokenRepository.findPublicWebsiteToken();
+    }
 
     @Override
     public Optional<Token> findByToken(UUID token) {
@@ -91,6 +112,10 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void increaseTokenUsage(Long id, int increment) {
         tokenRepository.increaseTokenUsage(id, increment);
+        Optional<Token> tokenOptional = tokenRepository.findById(id);
+        if (tokenOptional.isPresent()) {
+            this.clearTokenCaches(tokenOptional.get());
+        }
     }
 
     @Override
@@ -107,5 +132,10 @@ public class TokenServiceImpl implements TokenService {
     public void delete(Long id) {
         log.debug("Request to delete Token : {}", id);
         tokenRepository.deleteById(id);
+    }
+
+    private void clearTokenCaches(Token token) {
+        Objects.requireNonNull(cacheManager.getCache(this.cacheNameResolver.getCacheName(TOKEN_BY_UUID_CACHE))).evict(token.getToken());
+        Objects.requireNonNull(cacheManager.getCache(this.cacheNameResolver.getCacheName(TOKENS_BY_USER_CACHE))).evict(token.getUser());
     }
 }

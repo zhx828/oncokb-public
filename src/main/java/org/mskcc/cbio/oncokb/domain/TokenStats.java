@@ -8,7 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.time.Instant;
 
 /**
@@ -35,11 +34,15 @@ public class TokenStats implements Serializable {
     @Column(name = "access_time", nullable = false)
     private Instant accessTime;
 
+    @NotNull
+    @Column(name = "usage_count", nullable = false)
+    private Integer usageCount;
+
     @ManyToOne
-    @JsonIgnoreProperties("tokenStats")
+    @JsonIgnoreProperties(value = "tokenStats", allowSetters = true)
     private Token token;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
     }
@@ -87,6 +90,19 @@ public class TokenStats implements Serializable {
         this.accessTime = accessTime;
     }
 
+    public Integer getUsageCount() {
+        return usageCount;
+    }
+
+    public TokenStats usageCount(Integer usageCount) {
+        this.usageCount = usageCount;
+        return this;
+    }
+
+    public void setUsageCount(Integer usageCount) {
+        this.usageCount = usageCount;
+    }
+
     public Token getToken() {
         return token;
     }
@@ -99,7 +115,7 @@ public class TokenStats implements Serializable {
     public void setToken(Token token) {
         this.token = token;
     }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -117,6 +133,7 @@ public class TokenStats implements Serializable {
         return 31;
     }
 
+    // prettier-ignore
     @Override
     public String toString() {
         return "TokenStats{" +
@@ -124,6 +141,7 @@ public class TokenStats implements Serializable {
             ", accessIp='" + getAccessIp() + "'" +
             ", resource='" + getResource() + "'" +
             ", accessTime='" + getAccessTime() + "'" +
+            ", usageCount=" + getUsageCount() +
             "}";
     }
 }

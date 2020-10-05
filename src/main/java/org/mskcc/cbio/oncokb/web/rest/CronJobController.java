@@ -6,10 +6,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.mskcc.cbio.oncokb.domain.Token;
 import org.mskcc.cbio.oncokb.domain.User;
 import org.mskcc.cbio.oncokb.domain.enumeration.MailType;
+import org.mskcc.cbio.oncokb.querydomain.UserTokenUsage;
 import org.mskcc.cbio.oncokb.repository.UserRepository;
 import org.mskcc.cbio.oncokb.security.AuthoritiesConstants;
 import org.mskcc.cbio.oncokb.security.uuid.TokenProvider;
 import org.mskcc.cbio.oncokb.service.*;
+import org.mskcc.cbio.oncokb.service.dto.UserDTO;
 import org.mskcc.cbio.oncokb.service.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +20,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.mskcc.cbio.oncokb.config.Constants.DAY_IN_SECONDS;
+import static org.mskcc.cbio.oncokb.config.Constants.HALF_YEAR_IN_SECONDS;
+import static org.mskcc.cbio.oncokb.domain.enumeration.MailType.TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE;
 import static org.mskcc.cbio.oncokb.domain.enumeration.MailType.VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES;
 
 /**
@@ -110,8 +112,78 @@ public class CronJobController {
         }
     }
 
+    /**
+     * {@code GET  /generate-tokens} : Generate tokens for all users without tokens.
+     */
+    @GetMapping(path = "/generate-tokens")
+    public void generateTokens() {
+        log.info("Started the cronjob to generate tokens");
+        List<UserDTO> userDTOs = userService.getAllActivatedUsersWithoutTokens();
+
+        // Make sure the token has enough time before sending out the emails to users to verify the email address
+        Instant newTokenDefaultExpirationDate = Instant.now().plusSeconds(DAY_IN_SECONDS * 15);
+        userDTOs.stream().forEach(userDTO -> {
+            Instant expirationDate = userDTO.getCreatedDate() == null ? newTokenDefaultExpirationDate : userDTO.getCreatedDate().plusSeconds(HALF_YEAR_IN_SECONDS);
+            tokenProvider.createToken(userMapper.userDTOToUser(userDTO), Optional.of(expirationDate.isBefore(newTokenDefaultExpirationDate) ? newTokenDefaultExpirationDate : expirationDate), Optional.empty());
+        });
+    }
+
+    /**
+     * {@code GET  /update-token-stats} : Update token stats.
+     */
+    @GetMapping(path = "/update-token-stats")
+    public void updateTokenStats() {
+        log.info("Started the cronjob to update token stats");
+        List<UserTokenUsage> tokenUsages = tokenStatsService.getUserTokenUsage(Instant.now());
+
+        // Update tokens with token usage
+        tokenUsages.stream().forEach(tokenUsage -> {
+            if (!tokenUsage.getToken().getCurrentUsage().equals(tokenUsage.getCount())) {
+                Optional<Token> tokenOptional = tokenService.findByToken(tokenUsage.getToken().getToken());
+                if (tokenOptional.isPresent()) {
+                    tokenOptional.get().setCurrentUsage(tokenUsage.getCount());
+                    tokenService.save(tokenOptional.get());
+                }
+            }
+        });
+
+        // Update tokens without token usage
+        List<Long> tokenWithStats = tokenUsages.stream().map(tokenUsage -> tokenUsage.getToken().getId()).collect(Collectors.toList());
+        List<Token> tokens = tokenService.findAll().stream().filter(token -> !tokenWithStats.contains(token.getId())).collect(Collectors.toList());
+        tokens.stream().forEach(token -> {
+            if (!token.getCurrentUsage().equals(0)) {
+                token.setCurrentUsage(0);
+                tokenService.save(token);
+            }
+        });
+    }
+
+    /**
+     * {@code GET  /check-trial-accounts} : Check the status of trial accounts
+     */
+    @GetMapping(path = "/check-trial-accounts")
+    public void checkTrialAccounts() {
+        log.info("Started the cronjob to check the status of trial accounts");
+        final int DAYS_TO_CHECK = 3;
+        List<Token> tokens = tokenService
+            .findAllExpiresBeforeDate(Instant.now().plusSeconds(DAY_IN_SECONDS * DAYS_TO_CHECK))
+            .stream()
+            .filter(token -> !token.isRenewable() && token.getExpiration().isAfter(Instant.now()))
+            .filter(token -> {
+                // Do not include users that have been notified in the
+                return this.userMailsService.findUserMailsByUserAndMailTypeAndSentDateAfter(token.getUser(), TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE, token.getExpiration().minusSeconds(DAY_IN_SECONDS * DAYS_TO_CHECK)).isEmpty();
+            })
+            .collect(Collectors.toList());
+        List<UserDTO> userDTOS = tokens
+            .stream()
+            .map(token -> userMapper.userToUserDTO(token.getUser()))
+            .collect(Collectors.toList());
+
+        mailService.sendTrialAccountExpiresMail(DAYS_TO_CHECK, userDTOS);
+    }
+
     private void tokenCheckByTime(int daysToExpire, Set<String> notifiedUserIds) {
-        int secondsToExpire = 60 * 60 * 24 * daysToExpire;
+        int secondsToExpire = DAY_IN_SECONDS * daysToExpire;
         List<Token> tokensToBeExpired = tokenService.findAllExpiresBeforeDate(Instant.now().plusSeconds(secondsToExpire));// Only return the users that token is about to expire and no email has been sent before.
         List<User> selectedUsers = new ArrayList<>();
 
@@ -120,6 +192,7 @@ public class CronJobController {
                 // Skip PUBLIC_WEBSITE token since it's short live
                 !this.userService.userHasAuthority(token.getUser(), AuthoritiesConstants.PUBLIC_WEBSITE) &&
                 !notifiedUserIds.contains(token.getUser().getLogin()) &&
+                token.isRenewable() &&
                 // Do not include users that have been notified during the validate Token period
                 this.userMailsService.findUserMailsByUserAndMailTypeAndSentDateAfter(token.getUser(), VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES, token.getExpiration().minusSeconds(secondsToExpire)).isEmpty()
             ) {

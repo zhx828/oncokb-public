@@ -20,12 +20,16 @@
       "description": "Account Resource"
     },
     {
-      "name": "audit-resource",
-      "description": "Audit Resource"
+      "name": "cron-job-controller",
+      "description": "Cron Job Controller"
     },
     {
       "name": "mails-controller",
       "description": "Mails Controller"
+    },
+    {
+      "name": "token-resource",
+      "description": "Token Resource"
     },
     {
       "name": "user-details-resource",
@@ -138,6 +142,50 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/PasswordChangeDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/account/resend-verification": {
+      "post": {
+        "tags": [
+          "account-resource"
+        ],
+        "summary": "resendVerification",
+        "operationId": "resendVerificationUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "loginVM",
+            "description": "loginVM",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginVM"
             }
           }
         ],
@@ -467,6 +515,195 @@
         "deprecated": false
       }
     },
+    "/api/cronjob/check-trial-accounts": {
+      "get": {
+        "tags": [
+          "cron-job-controller"
+        ],
+        "summary": "checkTrialAccounts",
+        "operationId": "checkTrialAccountsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/cronjob/generate-tokens": {
+      "get": {
+        "tags": [
+          "cron-job-controller"
+        ],
+        "summary": "generateTokens",
+        "operationId": "generateTokensUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/cronjob/remove-not-activate-users": {
+      "get": {
+        "tags": [
+          "cron-job-controller"
+        ],
+        "summary": "removeNotActivatedUsers",
+        "operationId": "removeNotActivatedUsersUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/cronjob/remove-old-audit-events": {
+      "get": {
+        "tags": [
+          "cron-job-controller"
+        ],
+        "summary": "removeOldAuditEvents",
+        "operationId": "removeOldAuditEventsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/cronjob/remove-old-token-stats": {
+      "get": {
+        "tags": [
+          "cron-job-controller"
+        ],
+        "summary": "removeOldTokenStats",
+        "operationId": "removeOldTokenStatsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/cronjob/renew-tokens": {
+      "get": {
+        "tags": [
+          "cron-job-controller"
+        ],
+        "summary": "tokensRenewCheck",
+        "operationId": "tokensRenewCheckUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/cronjob/update-token-stats": {
+      "get": {
+        "tags": [
+          "cron-job-controller"
+        ],
+        "summary": "updateTokenStats",
+        "operationId": "updateTokenStatsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
     "/api/mails/from": {
       "get": {
         "tags": [
@@ -597,8 +834,14 @@
               "LICENSE_REVIEW_COMMERCIAL",
               "LICENSE_REVIEW_RESEARCH_COMMERCIAL",
               "LICENSE_REVIEW_HOSPITAL",
+              "SEND_INTAKE_FORM_COMMERCIAL",
+              "SEND_INTAKE_FORM_RESEARCH_COMMERCIAL",
+              "SEND_INTAKE_FORM_HOSPITAL",
               "CLARIFY_ACADEMIC_FOR_PROFIT",
               "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL",
+              "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES",
+              "APPROVAL_MSK_IN_COMMERCIAL",
+              "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE",
               "TEST"
             ]
           },
@@ -669,6 +912,204 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/tokens": {
+      "get": {
+        "tags": [
+          "token-resource"
+        ],
+        "summary": "getAllTokens",
+        "operationId": "getAllTokensUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Token"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "token-resource"
+        ],
+        "summary": "createToken",
+        "operationId": "createTokenUsingPOST_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "token",
+            "description": "token",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "token-resource"
+        ],
+        "summary": "updateToken",
+        "operationId": "updateTokenUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "token",
+            "description": "token",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/tokens/{id}": {
+      "get": {
+        "tags": [
+          "token-resource"
+        ],
+        "summary": "getToken",
+        "operationId": "getTokenUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "token-resource"
+        ],
+        "summary": "deleteToken",
+        "operationId": "deleteTokenUsingDELETE_1",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         },
         "deprecated": false
@@ -1105,11 +1546,11 @@
         "parameters": [
           {
             "in": "body",
-            "name": "userDTO",
-            "description": "userDTO",
+            "name": "managedUserVM",
+            "description": "managedUserVM",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserDTO"
+              "$ref": "#/definitions/ManagedUserVM"
             }
           }
         ],
@@ -1401,102 +1842,23 @@
         "deprecated": false
       }
     },
-    "/management/audits": {
+    "/api/users/{login}/tokens": {
       "get": {
         "tags": [
-          "audit-resource"
+          "user-resource"
         ],
-        "summary": "getByDates",
-        "operationId": "getByDatesUsingGET",
+        "summary": "getUserTokens",
+        "operationId": "getUserTokensUsingGET",
         "produces": [
           "*/*"
         ],
         "parameters": [
           {
-            "name": "fromDate",
-            "in": "query",
-            "description": "fromDate",
+            "name": "login",
+            "in": "path",
+            "description": "login",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number of the requested page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "paged",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "description": "Size of a page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
-          },
-          {
-            "name": "sort.sorted",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "sort.unsorted",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "toDate",
-            "in": "query",
-            "description": "toDate",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "unpaged",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
           }
         ],
         "responses": {
@@ -1505,48 +1867,8 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/AuditEvent"
+                "$ref": "#/definitions/Token"
               }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        },
-        "deprecated": false
-      }
-    },
-    "/management/audits/{id}": {
-      "get": {
-        "tags": [
-          "audit-resource"
-        ],
-        "summary": "get",
-        "operationId": "getUsingGET",
-        "produces": [
-          "*/*"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "id",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/AuditEvent"
             }
           },
           "401": {
@@ -1564,25 +1886,6 @@
     }
   },
   "definitions": {
-    "AuditEvent": {
-      "type": "object",
-      "properties": {
-        "data": {
-          "type": "object"
-        },
-        "principal": {
-          "type": "string"
-        },
-        "timestamp": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "type": {
-          "type": "string"
-        }
-      },
-      "title": "AuditEvent"
-    },
     "KeyAndPasswordVM": {
       "type": "object",
       "properties": {
@@ -1634,8 +1937,14 @@
             "LICENSE_REVIEW_COMMERCIAL",
             "LICENSE_REVIEW_RESEARCH_COMMERCIAL",
             "LICENSE_REVIEW_HOSPITAL",
+            "SEND_INTAKE_FORM_COMMERCIAL",
+            "SEND_INTAKE_FORM_RESEARCH_COMMERCIAL",
+            "SEND_INTAKE_FORM_HOSPITAL",
             "CLARIFY_ACADEMIC_FOR_PROFIT",
             "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL",
+            "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES",
+            "APPROVAL_MSK_IN_COMMERCIAL",
+            "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE",
             "TEST"
           ]
         }
@@ -1741,6 +2050,13 @@
         },
         "resetKey": {
           "type": "string"
+        },
+        "tokenIsRenewable": {
+          "type": "boolean"
+        },
+        "tokenValidDays": {
+          "type": "integer",
+          "format": "int32"
         }
       },
       "title": "ManagedUserVM"
@@ -1760,7 +2076,8 @@
     "Token": {
       "type": "object",
       "required": [
-        "currentUsage"
+        "currentUsage",
+        "renewable"
       ],
       "properties": {
         "creation": {
@@ -1778,6 +2095,9 @@
         "id": {
           "type": "integer",
           "format": "int64"
+        },
+        "renewable": {
+          "type": "boolean"
         },
         "token": {
           "type": "string",
@@ -2003,8 +2323,14 @@
             "LICENSE_REVIEW_COMMERCIAL",
             "LICENSE_REVIEW_RESEARCH_COMMERCIAL",
             "LICENSE_REVIEW_HOSPITAL",
+            "SEND_INTAKE_FORM_COMMERCIAL",
+            "SEND_INTAKE_FORM_RESEARCH_COMMERCIAL",
+            "SEND_INTAKE_FORM_HOSPITAL",
             "CLARIFY_ACADEMIC_FOR_PROFIT",
             "CLARIFY_ACADEMIC_NON_INSTITUTE_EMAIL",
+            "VERIFY_EMAIL_BEFORE_ACCOUNT_EXPIRES",
+            "APPROVAL_MSK_IN_COMMERCIAL",
+            "TRIAL_ACCOUNT_IS_ABOUT_TO_EXPIRE",
             "TEST"
           ]
         },
