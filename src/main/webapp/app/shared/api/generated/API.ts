@@ -97,6 +97,12 @@ export type Token = {
         'user': User
 
 };
+export type UsageSummary = {
+    'month': {}
+
+    'year': {}
+
+};
 export type User = {
     'activated': boolean
 
@@ -197,35 +203,38 @@ export type UserMailsDTO = {
         'userLogin': string
 
 };
-export type UserUsageOverview = {
-    'userId': string
-    'userEmail': string
+export type UserOverviewUsage = {
     'endpoint': string
-    'noPrivateEndpoint': string
-    'maxUsage': number
-    'noPrivateMaxUsage': number
-    'totalUsage': number
-}
 
+        'maxUsage': number
+
+        'noPrivateEndpoint': string
+
+        'noPrivateMaxUsage': number
+
+        'totalUsage': number
+
+        'userEmail': string
+
+        'userId': string
+
+};
 export type UserUsage = {
-    'userFirstName': string
-    'userLastName': string
-    'userEmail': string
-    'licenseType': string
-    'jobTitle': string
     'company': string
-    'summary': UsageSummary
-}
 
-export type UsageSummary = {
-    'month': Map<string, Map<string, number>>
-    'year': Map<string, number>
-}
+        'jobTitle': string
 
-export type UsageRecord = {
-    'resource': string,
-    'usage': number,
-}
+        'licenseType': string
+
+        'summary': UsageSummary
+
+        'userEmail': string
+
+        'userFirstName': string
+
+        'userLastName': string
+
+};
 
 /**
  * OncoKB, a comprehensive and curated precision oncology knowledge base, offers oncologists detailed, evidence-based information about individual somatic mutations and structural alterations present in patient tumors with the goal of supporting optimal treatment decisions.
@@ -2366,6 +2375,204 @@ export default class API {
             return response.body;
         });
     };
+    userOverviewUsageGetUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/usage/overview';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * userOverviewUsageGet
+     * @method
+     * @name API#userOverviewUsageGetUsingGET
+     */
+    userOverviewUsageGetUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/usage/overview';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * userOverviewUsageGet
+     * @method
+     * @name API#userOverviewUsageGetUsingGET
+     */
+    userOverviewUsageGetUsingGET(parameters: {
+            $queryParameters ? : any,
+                $domain ? : string
+        }): Promise < Array < UserOverviewUsage >
+        > {
+            return this.userOverviewUsageGetUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+                return response.body;
+            });
+        };
+    resourceUsageGetUsingGETURL(parameters: {
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/usage/resource';
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * resourceUsageGet
+     * @method
+     * @name API#resourceUsageGetUsingGET
+     */
+    resourceUsageGetUsingGETWithHttpInfo(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/usage/resource';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * resourceUsageGet
+     * @method
+     * @name API#resourceUsageGetUsingGET
+     */
+    resourceUsageGetUsingGET(parameters: {
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < UsageSummary > {
+        return this.resourceUsageGetUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    userUsageGetUsingGETURL(parameters: {
+        'userId': string,
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/api/usage/users/{userId}';
+
+        path = path.replace('{userId}', parameters['userId'] + '');
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * userUsageGet
+     * @method
+     * @name API#userUsageGetUsingGET
+     * @param {string} userId - userId
+     */
+    userUsageGetUsingGETWithHttpInfo(parameters: {
+        'userId': string,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/api/usage/users/{userId}';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = '*/*';
+
+            path = path.replace('{userId}', parameters['userId'] + '');
+
+            if (parameters['userId'] === undefined) {
+                reject(new Error('Missing required  parameter: userId'));
+                return;
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * userUsageGet
+     * @method
+     * @name API#userUsageGetUsingGET
+     * @param {string} userId - userId
+     */
+    userUsageGetUsingGET(parameters: {
+        'userId': string,
+        $queryParameters ? : any,
+        $domain ? : string
+    }): Promise < UserUsage > {
+        return this.userUsageGetUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
     getAllUserDetailsUsingGETURL(parameters: {
         $queryParameters ? : any
     }): string {
@@ -3782,94 +3989,4 @@ export default class API {
                 return response.body;
             });
         };
-
-    getAllResourcesUsageUsingGETWithHttpInfo(parameters: {
-        $queryParameters ? : any,
-        $domain ? : string
-    }): Promise < request.Response > {
-        const domain = parameters.$domain ? parameters.$domain : this.domain;
-        const errorHandlers = this.errorHandlers;
-        const request = this.request;
-        let path = '/api/usage/resource';
-        let body: any;
-        let queryParameters: any = {};
-        let headers: any = {};
-        let form: any = {};
-        return new Promise(function(resolve, reject) {
-            headers['Accept'] = 'application/json';
-            headers['Content-Type'] = 'application/json';
-
-            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
-        });
-    };
-
-    getAllResourcesUsageUsingGET( parameters: {
-            $queryParameters ? : any,
-            $domain ? : string
-        }): Promise < UsageSummary > {
-                return this.getAllResourcesUsageUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
-                    return response.body;
-                });
-            };
-
-    getUserUsageOverviewUsingGETWithHttpInfo(parameters: {
-        $queryParameters ? : any,
-        $domain ? : string
-    }): Promise < request.Response > {
-        const domain = parameters.$domain ? parameters.$domain : this.domain;
-        const errorHandlers = this.errorHandlers;
-        const request = this.request;
-        let path = '/api/usage/overview';
-        let body: any;
-        let queryParameters: any = {};
-        let headers: any = {};
-        let form: any = {};
-        return new Promise(function(resolve, reject) {
-            headers['Accept'] = 'application/json';
-            headers['Content-Type'] = 'application/json';
-
-            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
-        });
-    };
-
-    getUserUsageOverviewUsingGET( parameters: {
-            $queryParameters ? : any,
-            $domain ? : string
-        }): Promise < Array < UserUsageOverview > > {
-                return this.getUserUsageOverviewUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
-                    return response.body;
-                });
-            };
-
-    
-    getUserUsageUsingGETWithHttpInfo(parameters: {
-        id: string, 
-        $queryParameters ? : any,
-        $domain ? : string
-    }): Promise < request.Response > {
-        const domain = parameters.$domain ? parameters.$domain : this.domain;
-        const errorHandlers = this.errorHandlers;
-        const request = this.request;
-        let path = `/api/usage/users/${parameters.id}`;
-        let body: any;
-        let queryParameters: any = {};
-        let headers: any = {};
-        let form: any = {};
-        return new Promise(function(resolve, reject) {
-            headers['Accept'] = 'application/json';
-            headers['Content-Type'] = 'application/json';
-
-            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
-        });
-    };
-
-    getUserUsageUsingGET( parameters: {
-            id: string,
-            $queryParameters ? : any,
-            $domain ? : string
-        }): Promise < UserUsage > {
-                return this.getUserUsageUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
-                    return response.body;
-                });
-            };
 }
