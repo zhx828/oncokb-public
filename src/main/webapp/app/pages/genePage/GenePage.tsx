@@ -323,30 +323,30 @@ export default class GenePage extends React.Component<GenePageProps> {
 
   @computed
   get txAlterations() {
-    if (this.store.clinicalAlterations.result.length === 0) {
+    if (this.store.filteredClinicalAlterations.length === 0) {
       return [];
     }
-    return _.filter(this.store.clinicalAlterations.result, alt => {
+    return _.filter(this.store.filteredClinicalAlterations, alt => {
       return LEVEL_CLASSIFICATION[alt.level] === LEVEL_TYPES.TX;
     });
   }
 
   @computed
   get dxAlterations() {
-    if (this.store.clinicalAlterations.result.length === 0) {
+    if (this.store.filteredClinicalAlterations.length === 0) {
       return [];
     }
-    return _.filter(this.store.clinicalAlterations.result, alt => {
+    return _.filter(this.store.filteredClinicalAlterations, alt => {
       return LEVEL_CLASSIFICATION[alt.level] === LEVEL_TYPES.DX;
     });
   }
 
   @computed
   get pxAlterations() {
-    if (this.store.clinicalAlterations.result.length === 0) {
+    if (this.store.filteredClinicalAlterations.length === 0) {
       return [];
     }
-    return _.filter(this.store.clinicalAlterations.result, alt => {
+    return _.filter(this.store.filteredClinicalAlterations, alt => {
       return LEVEL_CLASSIFICATION[alt.level] === LEVEL_TYPES.PX;
     });
   }
