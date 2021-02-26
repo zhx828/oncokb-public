@@ -8,6 +8,7 @@ export type SearchColumn<T> = Column<T> & {
 };
 
 interface ITableWithSearchBox<T> extends Partial<TableProps<T>> {
+  key?: string;
   data: T[];
   disableSearch?: boolean;
   fixedHeight?: boolean;
@@ -46,7 +47,7 @@ export default class OncoKBTable<T> extends React.Component<
 
   render() {
     return (
-      <div>
+      <div key={this.props.key}>
         {this.props.disableSearch ? undefined : (
           <div className="d-flex">
             <div className="ml-auto">

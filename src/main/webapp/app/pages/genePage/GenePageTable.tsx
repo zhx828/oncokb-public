@@ -9,12 +9,14 @@ import {
 import React from 'react';
 
 export const GenePageTable: React.FunctionComponent<{
+  key?: string;
   data: any[];
   columns: SearchColumn<any>[];
   isPending: boolean;
 }> = props => {
   return (
     <OncoKBTable
+      key={props.key}
       data={props.data}
       columns={props.columns}
       loading={props.isPending}

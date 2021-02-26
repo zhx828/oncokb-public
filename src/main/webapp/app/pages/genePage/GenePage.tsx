@@ -321,14 +321,21 @@ export default class GenePage extends React.Component<GenePageProps> {
   private store: AnnotationStore;
   readonly reactions: IReactionDisposer[] = [];
 
+  filterAltsByLevelType(alterations: ClinicalVariant[], level: LEVEL_TYPES) {
+    return _.filter(alterations, alt => {
+      return LEVEL_CLASSIFICATION[alt.level] === level;
+    });
+  }
+
   @computed
   get txAlterations() {
     if (this.store.filteredClinicalAlterations.length === 0) {
       return [];
     }
-    return _.filter(this.store.filteredClinicalAlterations, alt => {
-      return LEVEL_CLASSIFICATION[alt.level] === LEVEL_TYPES.TX;
-    });
+    return this.filterAltsByLevelType(
+      this.store.filteredClinicalAlterations,
+      LEVEL_TYPES.TX
+    );
   }
 
   @computed
@@ -336,9 +343,10 @@ export default class GenePage extends React.Component<GenePageProps> {
     if (this.store.filteredClinicalAlterations.length === 0) {
       return [];
     }
-    return _.filter(this.store.filteredClinicalAlterations, alt => {
-      return LEVEL_CLASSIFICATION[alt.level] === LEVEL_TYPES.DX;
-    });
+    return this.filterAltsByLevelType(
+      this.store.filteredClinicalAlterations,
+      LEVEL_TYPES.DX
+    );
   }
 
   @computed
@@ -346,9 +354,10 @@ export default class GenePage extends React.Component<GenePageProps> {
     if (this.store.filteredClinicalAlterations.length === 0) {
       return [];
     }
-    return _.filter(this.store.filteredClinicalAlterations, alt => {
-      return LEVEL_CLASSIFICATION[alt.level] === LEVEL_TYPES.PX;
-    });
+    return this.filterAltsByLevelType(
+      this.store.filteredClinicalAlterations,
+      LEVEL_TYPES.PX
+    );
   }
 
   @computed
@@ -669,6 +678,7 @@ export default class GenePage extends React.Component<GenePageProps> {
       case TAB_KEYS.BIOLOGICAL:
         return (
           <GenePageTable
+            key={`gene-page-table-${TAB_KEYS.BIOLOGICAL}`}
             data={this.store.filteredBiologicalAlterations}
             columns={this.biologicalTableColumns}
             isPending={this.store.biologicalAlterations.isPending}
@@ -677,6 +687,7 @@ export default class GenePage extends React.Component<GenePageProps> {
       case TAB_KEYS.TX:
         return (
           <GenePageTable
+            key={`gene-page-table-${TAB_KEYS.TX}`}
             data={this.txAlterations}
             columns={this.clinicalTableColumns}
             isPending={this.store.clinicalAlterations.isPending}
@@ -685,6 +696,7 @@ export default class GenePage extends React.Component<GenePageProps> {
       case TAB_KEYS.DX:
         return (
           <GenePageTable
+            key={`gene-page-table-${TAB_KEYS.DX}`}
             data={this.dxAlterations}
             columns={this.dxpxTableColumns}
             isPending={this.store.clinicalAlterations.isPending}
@@ -693,6 +705,7 @@ export default class GenePage extends React.Component<GenePageProps> {
       case TAB_KEYS.PX:
         return (
           <GenePageTable
+            key={`gene-page-table-${TAB_KEYS.PX}`}
             data={this.pxAlterations}
             columns={this.dxpxTableColumns}
             isPending={this.store.clinicalAlterations.isPending}
@@ -713,19 +726,34 @@ export default class GenePage extends React.Component<GenePageProps> {
       });
     }
     if (this.store.clinicalAlterations.result.length > 0) {
-      if (this.txAlterations.length > 0) {
+      if (
+        this.filterAltsByLevelType(
+          this.store.clinicalAlterations.result,
+          LEVEL_TYPES.TX
+        ).length > 0
+      ) {
         tabs.push({
           key: TAB_KEYS.TX,
           title: 'Therapeutic',
         });
       }
-      if (this.dxAlterations.length > 0) {
+      if (
+        this.filterAltsByLevelType(
+          this.store.clinicalAlterations.result,
+          LEVEL_TYPES.DX
+        ).length > 0
+      ) {
         tabs.push({
           key: TAB_KEYS.DX,
           title: `Diagnostic`,
         });
       }
-      if (this.pxAlterations.length > 0) {
+      if (
+        this.filterAltsByLevelType(
+          this.store.clinicalAlterations.result,
+          LEVEL_TYPES.PX
+        ).length > 0
+      ) {
         tabs.push({
           key: TAB_KEYS.PX,
           title: `Prognostic`,
