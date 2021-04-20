@@ -43,7 +43,14 @@ const AppRouts = (props: {
   // Redirect needs to be defined first
   return (
     <Switch>
-      <Route exact path={PAGE_ROUTE.HOME} component={HomePage} />
+      <PrivateRoute
+        exact
+        authenticationStore={props.authenticationStore}
+        routing={props.routing}
+        hasAnyAuthorities={[AUTHORITIES.ADMIN]}
+        path={PAGE_ROUTE.HOME}
+        component={HomePage}
+      />
       <Redirect exact from={'/updates'} to={PAGE_ROUTE.NEWS} />
       <Redirect exact from={'/genes'} to={PAGE_ROUTE.CANCER_GENES} />
       <Redirect
@@ -99,31 +106,35 @@ const AppRouts = (props: {
             path={PAGE_ROUTE.CANCER_GENES}
             component={CancerGenesPage}
           />
-          <RecaptchaBoundaryRoute
+          <PrivateRoute
             exact
-            isUserAuthenticated={props.authenticationStore.isUserAuthenticated}
-            appStore={props.appStore}
+            authenticationStore={props.authenticationStore}
+            routing={props.routing}
+            hasAnyAuthorities={[AUTHORITIES.ADMIN]}
             path={PAGE_ROUTE.ACTIONABLE_GENE}
             component={ActionableGenesPage}
           />
-          <RecaptchaBoundaryRoute
+          <PrivateRoute
             exact
-            isUserAuthenticated={props.authenticationStore.isUserAuthenticated}
-            appStore={props.appStore}
+            authenticationStore={props.authenticationStore}
+            routing={props.routing}
+            hasAnyAuthorities={[AUTHORITIES.ADMIN]}
             path={PAGE_ROUTE.GENE}
             component={GenePage}
           />
-          <RecaptchaBoundaryRoute
+          <PrivateRoute
             exact
-            isUserAuthenticated={props.authenticationStore.isUserAuthenticated}
-            appStore={props.appStore}
+            authenticationStore={props.authenticationStore}
+            routing={props.routing}
+            hasAnyAuthorities={[AUTHORITIES.ADMIN]}
             path={PAGE_ROUTE.ALTERATION}
             component={AlterationPage}
           />
-          <RecaptchaBoundaryRoute
+          <PrivateRoute
             exact
-            isUserAuthenticated={props.authenticationStore.isUserAuthenticated}
-            appStore={props.appStore}
+            authenticationStore={props.authenticationStore}
+            routing={props.routing}
+            hasAnyAuthorities={[AUTHORITIES.ADMIN]}
             path={PAGE_ROUTE.HGVSG}
             component={HgvsgPage}
           />

@@ -95,10 +95,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/v1/v2/api-docs").permitAll()
             .antMatchers("/api/private/utils/data/**").hasAnyAuthority(AuthoritiesConstants.DATA_DOWNLOAD)
 
-            .antMatchers("/api/v1/annotate/**").hasAnyAuthority(AuthoritiesConstants.USER)
+            .antMatchers("/api/v1/annotate/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
 
-            .antMatchers("/api/v1/genes/lookup").hasAnyAuthority(AuthoritiesConstants.PUBLIC_WEBSITE, AuthoritiesConstants.USER, AuthoritiesConstants.ADMIN)
-            .antMatchers("/api/v1/evidences/**").hasAnyAuthority(AuthoritiesConstants.PUBLIC_WEBSITE, AuthoritiesConstants.USER, AuthoritiesConstants.ADMIN)
+            .antMatchers("/api/v1/genes/lookup").hasAnyAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/api/v1/evidences/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
 
             .antMatchers("/api/v1/utils/allCuratedGenes").permitAll()
             .antMatchers("/api/v1/utils/allCuratedGenes.txt").permitAll()
@@ -115,7 +115,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/account/active-trial/init").hasAnyAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/account/active-trial/finish").permitAll()
             .antMatchers("/api/account/active-trial/info").permitAll()
-            .antMatchers("/api/account/**").hasAnyAuthority(AuthoritiesConstants.USER)
+            .antMatchers("/api/account/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
 
             .antMatchers("/api/users/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/api/user-details/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
@@ -127,7 +127,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/mails/feedback").hasAnyAuthority(AuthoritiesConstants.PUBLIC_WEBSITE, AuthoritiesConstants.USER)
             .antMatchers("/api/mails/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
 
-            .antMatchers("/api/**").hasAnyAuthority(AuthoritiesConstants.PUBLIC_WEBSITE, AuthoritiesConstants.USER)
+            .antMatchers("/api/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
 
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
         .and()
