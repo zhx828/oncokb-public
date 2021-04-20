@@ -154,9 +154,9 @@ export default class AnnotationPage extends React.Component<IAnnotationPage> {
   @computed
   get clinicalTrials(): ClinicalTrialRecord[] {
     const trials: ClinicalTrialRecord[] = [];
-    this.props.annotation.treatments.forEach(treatment => {
+    this.props.annotation.treatments.forEach((treatment: any) => {
       const drugNames = treatment.drugs
-        .map(drug => {
+        .map((drug: any) => {
           return drug.drugName;
         })
         .join('+');
@@ -164,7 +164,7 @@ export default class AnnotationPage extends React.Component<IAnnotationPage> {
       const cancerType = treatment.levelAssociatedCancerType.name
         ? treatment.levelAssociatedCancerType.name
         : treatment.levelAssociatedCancerType.mainType.name;
-      treatment.clinicalTrials.forEach(trial => {
+      treatment.clinicalTrials.forEach((trial: any) => {
         trials.push({
           level: treatment.level.replace('LEVEL_', ''),
           alterations: treatment.alterations.join(', '),
