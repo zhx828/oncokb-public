@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "These endpoints are for private use only.",
-    "version": "v1.2.1",
+    "version": "v1.2.2",
     "title": "OncoKB Private APIs",
     "contact": {
       "name": "OncoKB",
@@ -496,6 +496,28 @@
             "description": "Evidence type to compute. This could help to improve the performance if you only look for sub-content. Example: ONCOGENIC. All available evidence type are GENE_SUMMARY, MUTATION_SUMMARY, TUMOR_TYPE_SUMMARY, PROGNOSTIC_SUMMARY, DIAGNOSTIC_SUMMARY, ONCOGENIC, MUTATION_EFFECT, PROGNOSTIC_IMPLICATION, DIAGNOSTIC_IMPLICATION, STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_SENSITIVITY, STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_RESISTANCE, INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_SENSITIVITY, INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_RESISTANCE. For multiple evidence types query, use ',' as separator.",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "The address of your location. Support zip code. Must be specified with country request parameter. Example: New York City, NY",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "description": "The country of your location. Must be specified with the address request parameter. Example: United States",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "The radius from your location. Must be specified with address and country request parameters. Example: 100, which means all trails have any site locates within 100 km from your location. If not specify, the default distance is 100km.",
+            "required": false,
+            "type": "number",
+            "format": "double"
           }
         ],
         "responses": {
@@ -1698,7 +1720,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Trial"
+                "$ref": "#/definitions/ClinicalTrial"
               }
             }
           },
@@ -1711,13 +1733,13 @@
         }
       }
     },
-    "/trials/cancerTypes": {
-      "post": {
+    "/trials-by-cancer-type": {
+      "get": {
         "tags": [
           "Trials"
         ],
-        "summary": "Return a list of trials using cancer types",
-        "operationId": "trialsGetByCancerTypesUsingPOST",
+        "summary": "Return a list of clinical trials by cancer type, treatment, location and distance",
+        "operationId": "trialsGetByCancerTypeUsingGET",
         "consumes": [
           "application/json"
         ],
@@ -1726,22 +1748,49 @@
         ],
         "parameters": [
           {
-            "in": "body",
-            "name": "body",
-            "description": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CancerTypesQuery"
-            }
+            "name": "cancerType",
+            "in": "query",
+            "description": "The cancer type that clinical trials belong to. Support cancer type name and OncoTree Code. Example: Glioma or AASTR. Support special cancer types: ALL_TUMORS, ALL_SOLID_TUMORS, ALL_LIQUID_TUMORS.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "treatment",
+            "in": "query",
+            "description": "Consisted of single/multiple drugs. Support drug name or NCIT code. For multiple drugs treatment, use '+' as separator. Example: Binimetinib+Ribociclib",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "The address of your location. Support zip code. Must be specified with country request parameter. Example: New York City, NY",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "description": "The country of your location. Must be specified with the address request parameter. Example: United States",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "The radius from your location. Must be specified with address and country request parameters. Example: 100, which means all trails have any site locates within 100 km from your location. If not specify, the default distance is 100km.",
+            "required": false,
+            "type": "number",
+            "format": "double"
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "#/definitions/List"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClinicalTrial"
               }
             }
           },
@@ -1773,7 +1822,7 @@
           {
             "name": "version",
             "in": "query",
-            "description": "version",
+            "description": "The data version",
             "required": false,
             "type": "string"
           }
@@ -1816,7 +1865,7 @@
           {
             "name": "version",
             "in": "query",
-            "description": "version",
+            "description": "The data version",
             "required": false,
             "type": "string"
           }
@@ -1856,7 +1905,7 @@
           {
             "name": "version",
             "in": "query",
-            "description": "version",
+            "description": "The data version",
             "required": false,
             "type": "string"
           }
@@ -1899,7 +1948,7 @@
           {
             "name": "version",
             "in": "query",
-            "description": "version",
+            "description": "The data version",
             "required": false,
             "type": "string"
           }
@@ -1938,9 +1987,17 @@
           {
             "name": "version",
             "in": "query",
-            "description": "version",
+            "description": "The data version",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "includeEvidence",
+            "in": "query",
+            "description": "Include gene summary and background",
+            "required": false,
+            "type": "boolean",
+            "default": true
           }
         ],
         "responses": {
@@ -1980,9 +2037,17 @@
           {
             "name": "version",
             "in": "query",
-            "description": "version",
+            "description": "The data version",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "includeEvidence",
+            "in": "query",
+            "description": "Include gene summary and background",
+            "required": false,
+            "type": "boolean",
+            "default": true
           }
         ],
         "responses": {
@@ -2019,7 +2084,7 @@
           {
             "name": "version",
             "in": "query",
-            "description": "version",
+            "description": "The data version",
             "required": false,
             "type": "string"
           }
@@ -2061,7 +2126,7 @@
           {
             "name": "version",
             "in": "query",
-            "description": "version",
+            "description": "The data version",
             "required": false,
             "type": "string"
           }
@@ -2272,6 +2337,14 @@
     }
   },
   "definitions": {
+    "Site": {
+      "type": "object",
+      "properties": {
+        "org": {
+          "$ref": "#/definitions/Organization"
+        }
+      }
+    },
     "AnnotateMutationByGenomicChangeQuery": {
       "type": "object",
       "properties": {
@@ -2326,6 +2399,49 @@
         },
         "treatmentDrugId": {
           "$ref": "#/definitions/TreatmentDrugId"
+        }
+      }
+    },
+    "Eligibility": {
+      "type": "object",
+      "properties": {
+        "structured": {
+          "$ref": "#/definitions/StructuredEligibility"
+        },
+        "unstructured": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UnstructuredEligibility"
+          }
+        }
+      }
+    },
+    "Organization": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "coordinates": {
+          "$ref": "#/definitions/Coordinates"
+        },
+        "country": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
         }
       }
     },
@@ -2565,6 +2681,45 @@
         },
         "tumorType": {
           "$ref": "#/definitions/TumorType"
+        }
+      }
+    },
+    "StructuredEligibility": {
+      "type": "object",
+      "properties": {
+        "acceptsHealthyVolunteers": {
+          "type": "boolean"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "maxAge": {
+          "type": "string"
+        },
+        "maxAgeInYears": {
+          "type": "number",
+          "format": "double"
+        },
+        "maxAgeNumber": {
+          "type": "number",
+          "format": "double"
+        },
+        "maxAgeUnit": {
+          "type": "string"
+        },
+        "minAge": {
+          "type": "string"
+        },
+        "minAgeInYears": {
+          "type": "number",
+          "format": "double"
+        },
+        "minAgeNumber": {
+          "type": "number",
+          "format": "double"
+        },
+        "minAgeUnit": {
+          "type": "string"
         }
       }
     },
@@ -3271,6 +3426,9 @@
     "CuratedGene": {
       "type": "object",
       "properties": {
+        "background": {
+          "type": "string"
+        },
         "entrezGeneId": {
           "type": "integer",
           "format": "int32"
@@ -3334,6 +3492,9 @@
         "exactMatchedAlteration": {
           "$ref": "#/definitions/Alteration"
         },
+        "exactMatchedTumorType": {
+          "$ref": "#/definitions/TumorType"
+        },
         "gene": {
           "$ref": "#/definitions/Gene"
         },
@@ -3377,32 +3538,6 @@
         }
       }
     },
-    "Trial": {
-      "type": "object",
-      "properties": {
-        "arms": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Arms"
-          }
-        },
-        "briefTitle": {
-          "type": "string"
-        },
-        "currentTrialStatus": {
-          "type": "string"
-        },
-        "isUSTrial": {
-          "type": "boolean"
-        },
-        "nctId": {
-          "type": "string"
-        },
-        "principalInvestigator": {
-          "type": "string"
-        }
-      }
-    },
     "QueryGene": {
       "type": "object",
       "properties": {
@@ -3415,14 +3550,16 @@
         }
       }
     },
-    "CancerTypesQuery": {
+    "Coordinates": {
       "type": "object",
       "properties": {
-        "cancerTypes": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "lat": {
+          "type": "number",
+          "format": "double"
+        },
+        "lon": {
+          "type": "number",
+          "format": "double"
         }
       }
     },
@@ -3559,11 +3696,21 @@
     "AnnotateMutationByProteinChangeQuery": {
       "type": "object",
       "properties": {
+        "address": {
+          "type": "string"
+        },
         "alteration": {
           "type": "string"
         },
         "consequence": {
           "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "distance": {
+          "type": "number",
+          "format": "double"
         },
         "evidenceTypes": {
           "type": "array",
@@ -3634,6 +3781,12 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "clinicalTrials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClinicalTrial"
           }
         },
         "description": {
@@ -3755,6 +3908,17 @@
             "510",
             "511"
           ]
+        }
+      }
+    },
+    "Collaborator": {
+      "type": "object",
+      "properties": {
+        "functionalRole": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -3974,6 +4138,58 @@
         }
       }
     },
+    "ClinicalTrial": {
+      "type": "object",
+      "properties": {
+        "arms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Arms"
+          }
+        },
+        "briefTitle": {
+          "type": "string"
+        },
+        "collaborators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collaborator"
+          }
+        },
+        "currentTrialStatus": {
+          "type": "string"
+        },
+        "currentTrialStatusDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "eligibility": {
+          "$ref": "#/definitions/Eligibility"
+        },
+        "nctId": {
+          "type": "string"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "previousTrialStatus": {
+          "type": "string"
+        },
+        "previousTrialStatusDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "principalInvestigator": {
+          "type": "string"
+        },
+        "sites": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Site"
+          }
+        }
+      }
+    },
     "Geneset": {
       "type": "object",
       "properties": {
@@ -4009,6 +4225,21 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "UnstructuredEligibility": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "displayOrder": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "inclusionIndicator": {
+          "type": "boolean"
         }
       }
     }

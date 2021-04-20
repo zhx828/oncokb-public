@@ -934,13 +934,6 @@
             ]
           },
           {
-            "name": "onlyDetailedCancerType",
-            "in": "query",
-            "description": "Return only Detailed Cancer Type.",
-            "required": false,
-            "type": "boolean"
-          },
-          {
             "in": "body",
             "name": "body",
             "description": "List of queries.",
@@ -1081,6 +1074,143 @@
               "items": {
                 "$ref": "#/definitions/TumorType"
               }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/utils/updateTranscript": {
+      "get": {
+        "tags": [
+          "Utils"
+        ],
+        "summary": "utilUpdateTranscriptGet",
+        "operationId": "utilUpdateTranscriptGetUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "hugoSymbol",
+            "in": "query",
+            "description": "hugoSymbol",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "entrezGeneId",
+            "in": "query",
+            "description": "entrezGeneId",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "grch37Isoform",
+            "in": "query",
+            "description": "grch37Isoform",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "grch37RefSeq",
+            "in": "query",
+            "description": "grch37RefSeq",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "grch38Isoform",
+            "in": "query",
+            "description": "grch38Isoform",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "grch38RefSeq",
+            "in": "query",
+            "description": "grch38RefSeq",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/utils/validateTranscriptUpdate": {
+      "get": {
+        "tags": [
+          "Utils"
+        ],
+        "summary": "utilValidateTranscriptUpdateGet",
+        "operationId": "utilValidateTranscriptUpdateGetUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "name": "hugoSymbol",
+            "in": "query",
+            "description": "hugoSymbol",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "entrezGeneId",
+            "in": "query",
+            "description": "entrezGeneId",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "grch37Isoform",
+            "in": "query",
+            "description": "grch37Isoform",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "grch38Isoform",
+            "in": "query",
+            "description": "grch38Isoform",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
             }
           },
           "401": {
@@ -1264,6 +1394,20 @@
         }
       }
     },
+    "Eligibility": {
+      "type": "object",
+      "properties": {
+        "structured": {
+          "$ref": "#/definitions/StructuredEligibility"
+        },
+        "unstructured": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UnstructuredEligibility"
+          }
+        }
+      }
+    },
     "Query": {
       "type": "object",
       "properties": {
@@ -1331,6 +1475,524 @@
           "type": "string"
         },
         "hugoSymbol": {
+          "type": "string"
+        }
+      }
+    },
+    "MainNumber": {
+      "type": "object",
+      "properties": {
+        "alteration": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "drug": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "gene": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "level": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MainNumberLevel"
+          }
+        },
+        "tumorType": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "CancerTypeCount": {
+      "type": "object",
+      "properties": {
+        "cancerType": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Implication": {
+      "type": "object",
+      "properties": {
+        "abstracts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ArticleAbstract"
+          }
+        },
+        "alterations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string"
+        },
+        "levelOfEvidence": {
+          "type": "string",
+          "enum": [
+            "LEVEL_0",
+            "LEVEL_1",
+            "LEVEL_2",
+            "LEVEL_2A",
+            "LEVEL_2B",
+            "LEVEL_3A",
+            "LEVEL_3B",
+            "LEVEL_4",
+            "LEVEL_R1",
+            "LEVEL_R2",
+            "LEVEL_R3",
+            "LEVEL_Px1",
+            "LEVEL_Px2",
+            "LEVEL_Px3",
+            "LEVEL_Dx1",
+            "LEVEL_Dx2",
+            "LEVEL_Dx3",
+            "NO"
+          ]
+        },
+        "pmids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tumorType": {
+          "$ref": "#/definitions/TumorType"
+        }
+      }
+    },
+    "StructuredEligibility": {
+      "type": "object",
+      "properties": {
+        "acceptsHealthyVolunteers": {
+          "type": "boolean"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "maxAge": {
+          "type": "string"
+        },
+        "maxAgeInYears": {
+          "type": "number",
+          "format": "double"
+        },
+        "maxAgeNumber": {
+          "type": "number",
+          "format": "double"
+        },
+        "maxAgeUnit": {
+          "type": "string"
+        },
+        "minAge": {
+          "type": "string"
+        },
+        "minAgeInYears": {
+          "type": "number",
+          "format": "double"
+        },
+        "minAgeNumber": {
+          "type": "number",
+          "format": "double"
+        },
+        "minAgeUnit": {
+          "type": "string"
+        }
+      }
+    },
+    "Gene": {
+      "type": "object",
+      "properties": {
+        "entrezGeneId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "geneAliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "genesets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Geneset"
+          }
+        },
+        "grch37Isoform": {
+          "type": "string"
+        },
+        "grch37RefSeq": {
+          "type": "string"
+        },
+        "grch38Isoform": {
+          "type": "string"
+        },
+        "grch38RefSeq": {
+          "type": "string"
+        },
+        "hugoSymbol": {
+          "type": "string"
+        },
+        "oncogene": {
+          "type": "boolean"
+        },
+        "tsg": {
+          "type": "boolean"
+        }
+      }
+    },
+    "TumorType": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "mainType": {
+          "type": "string"
+        },
+        "subtype": {
+          "type": "string"
+        },
+        "tissue": {
+          "type": "string"
+        },
+        "tumorForm": {
+          "type": "string",
+          "enum": [
+            "SOLID",
+            "LIQUID",
+            "MIXED"
+          ]
+        }
+      },
+      "description": "OncoTree Detailed Cancer Type"
+    },
+    "EnsemblTranscript": {
+      "type": "object",
+      "required": [
+        "geneId",
+        "proteinId",
+        "transcriptId"
+      ],
+      "properties": {
+        "ccdsId": {
+          "type": "string",
+          "description": "Consensus CDS (CCDS) ID"
+        },
+        "exons": {
+          "type": "array",
+          "description": "Exon information",
+          "items": {
+            "$ref": "#/definitions/Exon"
+          }
+        },
+        "geneId": {
+          "type": "string",
+          "description": "Ensembl gene id"
+        },
+        "hugoSymbols": {
+          "type": "array",
+          "description": "Hugo symbols",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pfamDomains": {
+          "type": "array",
+          "description": "Pfam domains",
+          "items": {
+            "$ref": "#/definitions/PfamDomainRange"
+          }
+        },
+        "proteinId": {
+          "type": "string",
+          "description": "Ensembl protein id"
+        },
+        "proteinLength": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Length of protein"
+        },
+        "refseqMrnaId": {
+          "type": "string",
+          "description": "RefSeq mRNA ID"
+        },
+        "transcriptId": {
+          "type": "string",
+          "description": "Ensembl transcript id"
+        },
+        "utrs": {
+          "type": "array",
+          "description": "UTR information",
+          "items": {
+            "$ref": "#/definitions/UntranslatedRegion"
+          }
+        }
+      }
+    },
+    "TreatmentDrugId": {
+      "type": "object",
+      "properties": {
+        "drug": {
+          "$ref": "#/definitions/Drug"
+        }
+      }
+    },
+    "MatchVariantResult": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "$ref": "#/definitions/Query"
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MatchVariant"
+          }
+        }
+      }
+    },
+    "Coordinates": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number",
+          "format": "double"
+        },
+        "lon": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "Arms": {
+      "type": "object",
+      "properties": {
+        "armDescription": {
+          "type": "string"
+        },
+        "drugs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Drug"
+          }
+        }
+      }
+    },
+    "MatchVariantRequest": {
+      "type": "object",
+      "properties": {
+        "oncokbVariants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MatchVariant"
+          }
+        },
+        "queries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Query"
+          }
+        }
+      }
+    },
+    "VariantConsequence": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "isGenerallyTruncating": {
+          "type": "boolean"
+        },
+        "term": {
+          "type": "string"
+        }
+      }
+    },
+    "PfamDomainRange": {
+      "type": "object",
+      "required": [
+        "pfamDomainEnd",
+        "pfamDomainId",
+        "pfamDomainStart"
+      ],
+      "properties": {
+        "pfamDomainEnd": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Pfam domain end amino acid"
+        },
+        "pfamDomainId": {
+          "type": "string",
+          "description": "Pfam domain id"
+        },
+        "pfamDomainStart": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Pfam domain start amino acid"
+        }
+      }
+    },
+    "BiologicalVariant": {
+      "type": "object",
+      "properties": {
+        "mutationEffect": {
+          "type": "string"
+        },
+        "mutationEffectAbstracts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ArticleAbstract"
+          }
+        },
+        "mutationEffectPmids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "oncogenic": {
+          "type": "string"
+        },
+        "oncogenicAbstracts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ArticleAbstract"
+          }
+        },
+        "oncogenicPmids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "variant": {
+          "$ref": "#/definitions/Alteration"
+        }
+      }
+    },
+    "ClinicalTrial": {
+      "type": "object",
+      "properties": {
+        "arms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Arms"
+          }
+        },
+        "briefTitle": {
+          "type": "string"
+        },
+        "collaborators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collaborator"
+          }
+        },
+        "currentTrialStatus": {
+          "type": "string"
+        },
+        "currentTrialStatusDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "eligibility": {
+          "$ref": "#/definitions/Eligibility"
+        },
+        "nctId": {
+          "type": "string"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "previousTrialStatus": {
+          "type": "string"
+        },
+        "previousTrialStatusDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "principalInvestigator": {
+          "type": "string"
+        },
+        "sites": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Site"
+          }
+        }
+      }
+    },
+    "UnstructuredEligibility": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "displayOrder": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "inclusionIndicator": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Site": {
+      "type": "object",
+      "properties": {
+        "org": {
+          "$ref": "#/definitions/Organization"
+        }
+      }
+    },
+    "Organization": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "coordinates": {
+          "$ref": "#/definitions/Coordinates"
+        },
+        "country": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "state": {
           "type": "string"
         }
       }
@@ -1440,45 +2102,6 @@
         },
         "version": {
           "type": "string"
-        }
-      }
-    },
-    "MainNumber": {
-      "type": "object",
-      "properties": {
-        "alteration": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "drug": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "gene": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "level": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/MainNumberLevel"
-          }
-        },
-        "tumorType": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "CancerTypeCount": {
-      "type": "object",
-      "properties": {
-        "cancerType": {
-          "type": "string"
-        },
-        "count": {
-          "type": "integer",
-          "format": "int32"
         }
       }
     },
@@ -1748,58 +2371,6 @@
         }
       }
     },
-    "Implication": {
-      "type": "object",
-      "properties": {
-        "abstracts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ArticleAbstract"
-          }
-        },
-        "alterations": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "description": {
-          "type": "string"
-        },
-        "levelOfEvidence": {
-          "type": "string",
-          "enum": [
-            "LEVEL_0",
-            "LEVEL_1",
-            "LEVEL_2",
-            "LEVEL_2A",
-            "LEVEL_2B",
-            "LEVEL_3A",
-            "LEVEL_3B",
-            "LEVEL_4",
-            "LEVEL_R1",
-            "LEVEL_R2",
-            "LEVEL_R3",
-            "LEVEL_Px1",
-            "LEVEL_Px2",
-            "LEVEL_Px3",
-            "LEVEL_Dx1",
-            "LEVEL_Dx2",
-            "LEVEL_Dx3",
-            "NO"
-          ]
-        },
-        "pmids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "tumorType": {
-          "$ref": "#/definitions/TumorType"
-        }
-      }
-    },
     "NCITDrug": {
       "type": "object",
       "properties": {
@@ -1908,85 +2479,6 @@
         }
       }
     },
-    "Gene": {
-      "type": "object",
-      "properties": {
-        "entrezGeneId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "geneAliases": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "genesets": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Geneset"
-          }
-        },
-        "grch37Isoform": {
-          "type": "string"
-        },
-        "grch37RefSeq": {
-          "type": "string"
-        },
-        "grch38Isoform": {
-          "type": "string"
-        },
-        "grch38RefSeq": {
-          "type": "string"
-        },
-        "hugoSymbol": {
-          "type": "string"
-        },
-        "oncogene": {
-          "type": "boolean"
-        },
-        "tsg": {
-          "type": "boolean"
-        }
-      }
-    },
-    "TumorType": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "string"
-        },
-        "color": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "level": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "mainType": {
-          "type": "string"
-        },
-        "subtype": {
-          "type": "string"
-        },
-        "tissue": {
-          "type": "string"
-        },
-        "tumorForm": {
-          "type": "string",
-          "enum": [
-            "SOLID",
-            "LIQUID",
-            "MIXED"
-          ]
-        }
-      },
-      "description": "OncoTree Detailed Cancer Type"
-    },
     "ClinicalVariant": {
       "type": "object",
       "properties": {
@@ -2053,91 +2545,6 @@
         },
         "sampleId": {
           "type": "string"
-        }
-      }
-    },
-    "EnsemblTranscript": {
-      "type": "object",
-      "required": [
-        "geneId",
-        "proteinId",
-        "transcriptId"
-      ],
-      "properties": {
-        "ccdsId": {
-          "type": "string",
-          "description": "Consensus CDS (CCDS) ID"
-        },
-        "exons": {
-          "type": "array",
-          "description": "Exon information",
-          "items": {
-            "$ref": "#/definitions/Exon"
-          }
-        },
-        "geneId": {
-          "type": "string",
-          "description": "Ensembl gene id"
-        },
-        "hugoSymbols": {
-          "type": "array",
-          "description": "Hugo symbols",
-          "items": {
-            "type": "string"
-          }
-        },
-        "pfamDomains": {
-          "type": "array",
-          "description": "Pfam domains",
-          "items": {
-            "$ref": "#/definitions/PfamDomainRange"
-          }
-        },
-        "proteinId": {
-          "type": "string",
-          "description": "Ensembl protein id"
-        },
-        "proteinLength": {
-          "type": "integer",
-          "format": "int32",
-          "description": "Length of protein"
-        },
-        "refseqMrnaId": {
-          "type": "string",
-          "description": "RefSeq mRNA ID"
-        },
-        "transcriptId": {
-          "type": "string",
-          "description": "Ensembl transcript id"
-        },
-        "utrs": {
-          "type": "array",
-          "description": "UTR information",
-          "items": {
-            "$ref": "#/definitions/UntranslatedRegion"
-          }
-        }
-      }
-    },
-    "TreatmentDrugId": {
-      "type": "object",
-      "properties": {
-        "drug": {
-          "$ref": "#/definitions/Drug"
-        }
-      }
-    },
-    "MatchVariantResult": {
-      "type": "object",
-      "properties": {
-        "query": {
-          "$ref": "#/definitions/Query"
-        },
-        "result": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/MatchVariant"
-          }
         }
       }
     },
@@ -2419,23 +2826,6 @@
         }
       }
     },
-    "MatchVariantRequest": {
-      "type": "object",
-      "properties": {
-        "oncokbVariants": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/MatchVariant"
-          }
-        },
-        "queries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Query"
-          }
-        }
-      }
-    },
     "MainType": {
       "type": "object",
       "properties": {
@@ -2456,20 +2846,6 @@
         }
       },
       "description": "OncoTree Cancer Type"
-    },
-    "VariantConsequence": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "isGenerallyTruncating": {
-          "type": "boolean"
-        },
-        "term": {
-          "type": "string"
-        }
-      }
     },
     "GeneNumber": {
       "type": "object",
@@ -2499,30 +2875,6 @@
         }
       }
     },
-    "PfamDomainRange": {
-      "type": "object",
-      "required": [
-        "pfamDomainEnd",
-        "pfamDomainId",
-        "pfamDomainStart"
-      ],
-      "properties": {
-        "pfamDomainEnd": {
-          "type": "integer",
-          "format": "int32",
-          "description": "Pfam domain end amino acid"
-        },
-        "pfamDomainId": {
-          "type": "string",
-          "description": "Pfam domain id"
-        },
-        "pfamDomainStart": {
-          "type": "integer",
-          "format": "int32",
-          "description": "Pfam domain start amino acid"
-        }
-      }
-    },
     "IndicatorQueryTreatment": {
       "type": "object",
       "properties": {
@@ -2542,6 +2894,12 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "clinicalTrials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClinicalTrial"
           }
         },
         "description": {
@@ -2608,6 +2966,17 @@
         }
       }
     },
+    "Collaborator": {
+      "type": "object",
+      "properties": {
+        "functionalRole": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "MutationEffectResp": {
       "type": "object",
       "properties": {
@@ -2619,44 +2988,6 @@
         },
         "knownEffect": {
           "type": "string"
-        }
-      }
-    },
-    "BiologicalVariant": {
-      "type": "object",
-      "properties": {
-        "mutationEffect": {
-          "type": "string"
-        },
-        "mutationEffectAbstracts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ArticleAbstract"
-          }
-        },
-        "mutationEffectPmids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "oncogenic": {
-          "type": "string"
-        },
-        "oncogenicAbstracts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ArticleAbstract"
-          }
-        },
-        "oncogenicPmids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "variant": {
-          "$ref": "#/definitions/Alteration"
         }
       }
     },

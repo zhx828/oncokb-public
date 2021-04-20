@@ -15,7 +15,9 @@ import {
 } from 'app/config/constants';
 import styles from 'app/pages/alterationPage/AlterationPage.module.scss';
 import InfoIcon from 'app/shared/icons/InfoIcon';
-import { SearchColumn } from 'app/components/oncokbTable/OncoKBTable';
+import OncoKBTable, {
+  SearchColumn,
+} from 'app/components/oncokbTable/OncoKBTable';
 import { AlterationInfo } from 'app/pages/annotationPage/AlterationInfo';
 import { Button, Col, Row } from 'react-bootstrap';
 import classnames from 'classnames';
@@ -26,7 +28,10 @@ import {
   VariantAnnotation,
   VariantAnnotationTumorType,
 } from 'app/shared/api/generated/OncoKbPrivateAPI';
-import { TherapeuticImplication } from 'app/store/AnnotationStore';
+import {
+  ClinicalTrialRecord,
+  TherapeuticImplication,
+} from 'app/store/AnnotationStore';
 import {
   articles2Citations,
   getCancerTypeNameFromOncoTreeType,
@@ -44,6 +49,8 @@ import WithSeparator from 'react-with-separator';
 import AppStore from 'app/store/AppStore';
 import { FeedbackIcon } from 'app/components/feedback/FeedbackIcon';
 import { FeedbackType } from 'app/components/feedback/types';
+import { defaultSortMethod } from 'app/shared/utils/ReactTableUtils';
+import Iframe from 'react-iframe';
 
 enum SummaryKey {
   GENE_SUMMARY = 'geneSummary',
@@ -63,6 +70,8 @@ const SUMMARY_TITLE = {
 
 const ONCOGENIC_MUTATIONS = 'Oncogenic Mutations';
 const LOWERCASE_ONCOGENIC_MUTATIONS = ONCOGENIC_MUTATIONS.toLowerCase();
+
+type TAB_KEYS = LEVEL_TYPES | 'CT';
 
 export type IAnnotationPage = {
   appStore?: AppStore;
@@ -139,6 +148,36 @@ export default class AnnotationPage extends React.Component<IAnnotationPage> {
       this.getEvidenceByEvidenceTypes(this.props.annotation.tumorTypes, [
         EVIDENCE_TYPES.PROGNOSTIC_IMPLICATION,
       ])
+    );
+  }
+
+  @computed
+  get clinicalTrials(): ClinicalTrialRecord[] {
+    const trials: ClinicalTrialRecord[] = [];
+    this.props.annotation.treatments.forEach(treatment => {
+      const drugNames = treatment.drugs
+        .map(drug => {
+          return drug.drugName;
+        })
+        .join('+');
+      // @ts-ignore
+      const cancerType = treatment.levelAssociatedCancerType.name
+        ? treatment.levelAssociatedCancerType.name
+        : treatment.levelAssociatedCancerType.mainType.name;
+      treatment.clinicalTrials.forEach(trial => {
+        trials.push({
+          level: treatment.level.replace('LEVEL_', ''),
+          alterations: treatment.alterations.join(', '),
+          cancerType,
+          drugs: drugNames,
+          clinicalTrial: trial,
+        });
+      });
+    });
+    return _.uniqBy(
+      trials,
+      trial =>
+        `${trial.level}-${trial.alterations}-${trial.drugs}-${trial.clinicalTrial.nctId}`
     );
   }
 
@@ -242,6 +281,71 @@ export default class AnnotationPage extends React.Component<IAnnotationPage> {
     ];
   }
 
+  @computed
+  get clinicalTrialTableColumns(): SearchColumn<ClinicalTrialRecord>[] {
+    return [
+      {
+        ...getDefaultColumnDefinition(TABLE_COLUMN_KEY.LEVEL),
+      },
+      {
+        ...getDefaultColumnDefinition(TABLE_COLUMN_KEY.ALTERATIONS),
+      },
+      {
+        id: 'cancerType',
+        Header: <span>Cancer Type</span>,
+        accessor: 'cancerType',
+        sortMethod: defaultSortMethod,
+      },
+      {
+        id: 'drugs',
+        Header: <span>Drugs</span>,
+        accessor: 'drugs',
+        sortMethod: defaultSortMethod,
+      },
+      {
+        id: 'nctId',
+        accessor: 'clinicalTrial.nctId',
+        Header: <span>NCT ID</span>,
+        sortMethod: defaultSortMethod,
+        Cell(props: { original: ClinicalTrialRecord }) {
+          const link = `https://clinicaltrials.gov/ct2/show/NCT02335944?term=${props.original.clinicalTrial.nctId}`;
+          return (
+            <DefaultTooltip
+              placement={'top'}
+              overlay={() => (
+                <div>
+                  <Iframe url={link} width="800px" height="400px" />
+                </div>
+              )}
+            >
+              <span onClick={() => window.open(link)}>
+                {props.original.clinicalTrial.nctId}
+              </span>
+            </DefaultTooltip>
+          );
+        },
+      },
+      {
+        id: 'title',
+        accessor: 'clinicalTrial.briefTitle',
+        Header: <span>Title</span>,
+        sortMethod: defaultSortMethod,
+        Cell(props: { original: ClinicalTrialRecord }) {
+          return <span>{props.original.clinicalTrial.briefTitle}</span>;
+        },
+      },
+      {
+        id: 'status',
+        accessor: 'clinicalTrial.currentTrialStatus',
+        Header: <span>Trial Status</span>,
+        sortMethod: defaultSortMethod,
+        Cell(props: { original: ClinicalTrialRecord }) {
+          return <span>{props.original.clinicalTrial.currentTrialStatus}</span>;
+        },
+      },
+    ];
+  }
+
   getCancerTypesCell(cancerTypes: string[]) {
     return (
       <WithSeparator separator={', '}>
@@ -313,7 +417,9 @@ export default class AnnotationPage extends React.Component<IAnnotationPage> {
 
   @computed
   get tabDefaultActiveKey() {
-    if (this.therapeuticImplications.length > 0) {
+    if (this.clinicalTrials.length > 0) {
+      return 'CT';
+    } else if (this.therapeuticImplications.length > 0) {
       return LEVEL_TYPES.TX;
     } else if (this.diagnosticImplications.length > 0) {
       return LEVEL_TYPES.DX;
@@ -321,7 +427,7 @@ export default class AnnotationPage extends React.Component<IAnnotationPage> {
     return LEVEL_TYPES.PX;
   }
 
-  getTable(key: LEVEL_TYPES) {
+  getTable(key: TAB_KEYS) {
     switch (key) {
       case LEVEL_TYPES.TX:
         return (
@@ -347,18 +453,45 @@ export default class AnnotationPage extends React.Component<IAnnotationPage> {
             column={this.dxpxTableColumns}
           />
         );
+      case 'CT':
+        return (
+          <OncoKBTable
+            data={this.clinicalTrials}
+            columns={this.clinicalTrialTableColumns}
+            disableSearch={true}
+            defaultSorted={[
+              {
+                id: 'status',
+                desc: false,
+              },
+              {
+                id: 'nctId',
+                desc: false,
+              },
+              {
+                id: 'drugs',
+                desc: false,
+              },
+              {
+                id: 'level',
+                desc: false,
+              },
+            ]}
+          />
+        );
       default:
         return <span />;
     }
   }
 
-  readonly tabDescription: { [key in LEVEL_TYPES]: string } = {
+  readonly tabDescription: { [key in TAB_KEYS]: string } = {
     [LEVEL_TYPES.TX]: '',
+    CT: '',
     [LEVEL_TYPES.DX]: DEFAULT_MESSAGE_HEME_ONLY_DX,
     [LEVEL_TYPES.PX]: DEFAULT_MESSAGE_HEME_ONLY_PX,
   };
 
-  getTabContent(key: LEVEL_TYPES) {
+  getTabContent(key: TAB_KEYS) {
     return (
       <div>
         {this.tabDescription[key] ? (
@@ -371,7 +504,7 @@ export default class AnnotationPage extends React.Component<IAnnotationPage> {
 
   @computed
   get tabs() {
-    const tabs: { title: string; key: LEVEL_TYPES }[] = [];
+    const tabs: { title: string; key: TAB_KEYS }[] = [];
     if (this.therapeuticImplications.length > 0) {
       tabs.push({
         key: LEVEL_TYPES.TX,
@@ -388,6 +521,12 @@ export default class AnnotationPage extends React.Component<IAnnotationPage> {
       tabs.push({
         key: LEVEL_TYPES.PX,
         title: `${LEVEL_TYPE_NAMES.Px}`,
+      });
+    }
+    if (this.clinicalTrials.length > 0) {
+      tabs.push({
+        key: 'CT',
+        title: 'Clinical Trials',
       });
     }
     return tabs.map(tab => {

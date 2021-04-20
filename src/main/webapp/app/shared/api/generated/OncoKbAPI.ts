@@ -1,6 +1,10 @@
 import * as request from "superagent";
 
 type CallbackHandler = (err: any, res ? : request.Response) => void;
+export type Site = {
+    'org': Organization
+
+};
 export type AnnotateMutationByGenomicChangeQuery = {
     'evidenceTypes': Array < "GENE_SUMMARY" | "MUTATION_SUMMARY" | "TUMOR_TYPE_SUMMARY" | "GENE_TUMOR_TYPE_SUMMARY" | "PROGNOSTIC_SUMMARY" | "DIAGNOSTIC_SUMMARY" | "GENE_BACKGROUND" | "ONCOGENIC" | "MUTATION_EFFECT" | "VUS" | "PROGNOSTIC_IMPLICATION" | "DIAGNOSTIC_IMPLICATION" | "STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_SENSITIVITY" | "STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_RESISTANCE" | "INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_SENSITIVITY" | "INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_RESISTANCE" >
 
@@ -17,6 +21,30 @@ export type TreatmentDrug = {
     'priority': number
 
         'treatmentDrugId': TreatmentDrugId
+
+};
+export type Eligibility = {
+    'structured': StructuredEligibility
+
+        'unstructured': Array < UnstructuredEligibility >
+
+};
+export type Organization = {
+    'address': string
+
+        'city': string
+
+        'coordinates': Coordinates
+
+        'country': string
+
+        'email': string
+
+        'name': string
+
+        'phone': string
+
+        'state': string
 
 };
 export type Query = {
@@ -133,6 +161,28 @@ export type Implication = {
         'pmids': Array < string >
 
         'tumorType': TumorType
+
+};
+export type StructuredEligibility = {
+    'acceptsHealthyVolunteers': boolean
+
+        'gender': string
+
+        'maxAge': string
+
+        'maxAgeInYears': number
+
+        'maxAgeNumber': number
+
+        'maxAgeUnit': string
+
+        'minAge': string
+
+        'minAgeInYears': number
+
+        'minAgeNumber': number
+
+        'minAgeUnit': string
 
 };
 export type TumorType = {
@@ -366,7 +416,9 @@ export type Drug = {
 
 };
 export type CuratedGene = {
-    'entrezGeneId': number
+    'background': string
+
+        'entrezGeneId': number
 
         'grch37Isoform': string
 
@@ -400,6 +452,8 @@ export type EvidenceQueryRes = {
 
         'exactMatchedAlteration': Alteration
 
+        'exactMatchedTumorType': TumorType
+
         'gene': Gene
 
         'id': string
@@ -411,28 +465,16 @@ export type EvidenceQueryRes = {
         'query': Query
 
 };
-export type Trial = {
-    'arms': Array < Arms >
-
-        'briefTitle': string
-
-        'currentTrialStatus': string
-
-        'isUSTrial': boolean
-
-        'nctId': string
-
-        'principalInvestigator': string
-
-};
 export type QueryGene = {
     'entrezGeneId': number
 
         'hugoSymbol': string
 
 };
-export type CancerTypesQuery = {
-    'cancerTypes': Array < string >
+export type Coordinates = {
+    'lat': number
+
+        'lon': number
 
 };
 export type CancerGene = {
@@ -506,9 +548,15 @@ export type VariantConsequence = {
 
 };
 export type AnnotateMutationByProteinChangeQuery = {
-    'alteration': string
+    'address': string
+
+        'alteration': string
 
         'consequence': string
+
+        'country': string
+
+        'distance': number
 
         'evidenceTypes': Array < "GENE_SUMMARY" | "MUTATION_SUMMARY" | "TUMOR_TYPE_SUMMARY" | "GENE_TUMOR_TYPE_SUMMARY" | "PROGNOSTIC_SUMMARY" | "DIAGNOSTIC_SUMMARY" | "GENE_BACKGROUND" | "ONCOGENIC" | "MUTATION_EFFECT" | "VUS" | "PROGNOSTIC_IMPLICATION" | "DIAGNOSTIC_IMPLICATION" | "STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_SENSITIVITY" | "STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_RESISTANCE" | "INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_SENSITIVITY" | "INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_RESISTANCE" >
 
@@ -532,6 +580,8 @@ export type IndicatorQueryTreatment = {
 
         'approvedIndications': Array < string >
 
+        'clinicalTrials': Array < ClinicalTrial >
+
         'description': string
 
         'drugs': Array < Drug >
@@ -547,6 +597,12 @@ export type ResponseEntity = {
     'body': {}
 
     'statusCode': "100" | "101" | "102" | "103" | "200" | "201" | "202" | "203" | "204" | "205" | "206" | "207" | "208" | "226" | "300" | "301" | "302" | "302" | "303" | "304" | "305" | "307" | "308" | "400" | "401" | "402" | "403" | "404" | "405" | "406" | "407" | "408" | "409" | "410" | "411" | "412" | "413" | "413" | "414" | "414" | "415" | "416" | "417" | "418" | "419" | "420" | "421" | "422" | "423" | "424" | "426" | "428" | "429" | "431" | "500" | "501" | "502" | "503" | "504" | "505" | "506" | "507" | "508" | "509" | "510" | "511"
+
+};
+export type Collaborator = {
+    'functionalRole': string
+
+        'name': string
 
 };
 export type Treatment = {
@@ -621,6 +677,32 @@ export type AnnotateMutationByHGVSgQuery = {
         'tumorType': string
 
 };
+export type ClinicalTrial = {
+    'arms': Array < Arms >
+
+        'briefTitle': string
+
+        'collaborators': Array < Collaborator >
+
+        'currentTrialStatus': string
+
+        'currentTrialStatusDate': string
+
+        'eligibility': Eligibility
+
+        'nctId': string
+
+        'phase': string
+
+        'previousTrialStatus': string
+
+        'previousTrialStatusDate': string
+
+        'principalInvestigator': string
+
+        'sites': Array < Site >
+
+};
 export type Geneset = {
     'genes': Array < Gene >
 
@@ -635,6 +717,14 @@ export type Citations = {
     'abstracts': Array < ArticleAbstract >
 
         'pmids': Array < string >
+
+};
+export type UnstructuredEligibility = {
+    'description': string
+
+        'displayOrder': number
+
+        'inclusionIndicator': boolean
 
 };
 
@@ -1313,6 +1403,9 @@ export default class OncoKbAPI {
         'proteinEnd' ? : number,
         'tumorType' ? : string,
         'evidenceType' ? : string,
+        'address' ? : string,
+        'country' ? : string,
+        'distance' ? : number,
         $queryParameters ? : any
     }): string {
         let queryParameters: any = {};
@@ -1353,6 +1446,18 @@ export default class OncoKbAPI {
             queryParameters['evidenceType'] = parameters['evidenceType'];
         }
 
+        if (parameters['address'] !== undefined) {
+            queryParameters['address'] = parameters['address'];
+        }
+
+        if (parameters['country'] !== undefined) {
+            queryParameters['country'] = parameters['country'];
+        }
+
+        if (parameters['distance'] !== undefined) {
+            queryParameters['distance'] = parameters['distance'];
+        }
+
         if (parameters.$queryParameters) {
             Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
                 var parameter = parameters.$queryParameters[parameterName];
@@ -1376,6 +1481,9 @@ export default class OncoKbAPI {
      * @param {integer} proteinEnd - Protein End. Example: 600
      * @param {string} tumorType - OncoTree(http://oncotree.info) tumor type name. The field supports OncoTree Code, OncoTree Name and OncoTree Main type. Example: Melanoma
      * @param {string} evidenceType - Evidence type to compute. This could help to improve the performance if you only look for sub-content. Example: ONCOGENIC. All available evidence type are GENE_SUMMARY, MUTATION_SUMMARY, TUMOR_TYPE_SUMMARY, PROGNOSTIC_SUMMARY, DIAGNOSTIC_SUMMARY, ONCOGENIC, MUTATION_EFFECT, PROGNOSTIC_IMPLICATION, DIAGNOSTIC_IMPLICATION, STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_SENSITIVITY, STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_RESISTANCE, INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_SENSITIVITY, INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_RESISTANCE. For multiple evidence types query, use ',' as separator.
+     * @param {string} address - The address of your location. Support zip code. Must be specified with country request parameter. Example: New York City, NY
+     * @param {string} country - The country of your location. Must be specified with the address request parameter. Example: United States
+     * @param {number} distance - The radius from your location. Must be specified with address and country request parameters. Example: 100, which means all trails have any site locates within 100 km from your location. If not specify, the default distance is 100km.
      */
     annotateMutationsByProteinChangeGetUsingGETWithHttpInfo(parameters: {
         'hugoSymbol' ? : string,
@@ -1387,6 +1495,9 @@ export default class OncoKbAPI {
         'proteinEnd' ? : number,
         'tumorType' ? : string,
         'evidenceType' ? : string,
+        'address' ? : string,
+        'country' ? : string,
+        'distance' ? : number,
         $queryParameters ? : any,
             $domain ? : string
     }): Promise < request.Response > {
@@ -1438,6 +1549,18 @@ export default class OncoKbAPI {
                 queryParameters['evidenceType'] = parameters['evidenceType'];
             }
 
+            if (parameters['address'] !== undefined) {
+                queryParameters['address'] = parameters['address'];
+            }
+
+            if (parameters['country'] !== undefined) {
+                queryParameters['country'] = parameters['country'];
+            }
+
+            if (parameters['distance'] !== undefined) {
+                queryParameters['distance'] = parameters['distance'];
+            }
+
             if (parameters.$queryParameters) {
                 Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
                     var parameter = parameters.$queryParameters[parameterName];
@@ -1463,6 +1586,9 @@ export default class OncoKbAPI {
      * @param {integer} proteinEnd - Protein End. Example: 600
      * @param {string} tumorType - OncoTree(http://oncotree.info) tumor type name. The field supports OncoTree Code, OncoTree Name and OncoTree Main type. Example: Melanoma
      * @param {string} evidenceType - Evidence type to compute. This could help to improve the performance if you only look for sub-content. Example: ONCOGENIC. All available evidence type are GENE_SUMMARY, MUTATION_SUMMARY, TUMOR_TYPE_SUMMARY, PROGNOSTIC_SUMMARY, DIAGNOSTIC_SUMMARY, ONCOGENIC, MUTATION_EFFECT, PROGNOSTIC_IMPLICATION, DIAGNOSTIC_IMPLICATION, STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_SENSITIVITY, STANDARD_THERAPEUTIC_IMPLICATIONS_FOR_DRUG_RESISTANCE, INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_SENSITIVITY, INVESTIGATIONAL_THERAPEUTIC_IMPLICATIONS_DRUG_RESISTANCE. For multiple evidence types query, use ',' as separator.
+     * @param {string} address - The address of your location. Support zip code. Must be specified with country request parameter. Example: New York City, NY
+     * @param {string} country - The country of your location. Must be specified with the address request parameter. Example: United States
+     * @param {number} distance - The radius from your location. Must be specified with address and country request parameters. Example: 100, which means all trails have any site locates within 100 km from your location. If not specify, the default distance is 100km.
      */
     annotateMutationsByProteinChangeGetUsingGET(parameters: {
         'hugoSymbol' ? : string,
@@ -1474,6 +1600,9 @@ export default class OncoKbAPI {
         'proteinEnd' ? : number,
         'tumorType' ? : string,
         'evidenceType' ? : string,
+        'address' ? : string,
+        'country' ? : string,
+        'distance' ? : number,
         $queryParameters ? : any,
             $domain ? : string
     }): Promise < IndicatorQueryResp > {
@@ -3841,18 +3970,41 @@ export default class OncoKbAPI {
             'treatment' ? : string,
             $queryParameters ? : any,
             $domain ? : string
-        }): Promise < Array < Trial >
+        }): Promise < Array < ClinicalTrial >
         > {
             return this.trialsMatchingGetUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
                 return response.body;
             });
         };
-    trialsGetByCancerTypesUsingPOSTURL(parameters: {
-        'body': CancerTypesQuery,
+    trialsGetByCancerTypeUsingGETURL(parameters: {
+        'cancerType' ? : string,
+        'treatment' ? : string,
+        'address' ? : string,
+        'country' ? : string,
+        'distance' ? : number,
         $queryParameters ? : any
     }): string {
         let queryParameters: any = {};
-        let path = '/trials/cancerTypes';
+        let path = '/trials-by-cancer-type';
+        if (parameters['cancerType'] !== undefined) {
+            queryParameters['cancerType'] = parameters['cancerType'];
+        }
+
+        if (parameters['treatment'] !== undefined) {
+            queryParameters['treatment'] = parameters['treatment'];
+        }
+
+        if (parameters['address'] !== undefined) {
+            queryParameters['address'] = parameters['address'];
+        }
+
+        if (parameters['country'] !== undefined) {
+            queryParameters['country'] = parameters['country'];
+        }
+
+        if (parameters['distance'] !== undefined) {
+            queryParameters['distance'] = parameters['distance'];
+        }
 
         if (parameters.$queryParameters) {
             Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
@@ -3865,20 +4017,28 @@ export default class OncoKbAPI {
     };
 
     /**
-     * Return a list of trials using cancer types
+     * Return a list of clinical trials by cancer type, treatment, location and distance
      * @method
-     * @name OncoKbAPI#trialsGetByCancerTypesUsingPOST
-     * @param {} body - body
+     * @name OncoKbAPI#trialsGetByCancerTypeUsingGET
+     * @param {string} cancerType - The cancer type that clinical trials belong to. Support cancer type name and OncoTree Code. Example: Glioma or AASTR. Support special cancer types: ALL_TUMORS, ALL_SOLID_TUMORS, ALL_LIQUID_TUMORS.
+     * @param {string} treatment - Consisted of single/multiple drugs. Support drug name or NCIT code. For multiple drugs treatment, use '+' as separator. Example: Binimetinib+Ribociclib
+     * @param {string} address - The address of your location. Support zip code. Must be specified with country request parameter. Example: New York City, NY
+     * @param {string} country - The country of your location. Must be specified with the address request parameter. Example: United States
+     * @param {number} distance - The radius from your location. Must be specified with address and country request parameters. Example: 100, which means all trails have any site locates within 100 km from your location. If not specify, the default distance is 100km.
      */
-    trialsGetByCancerTypesUsingPOSTWithHttpInfo(parameters: {
-        'body': CancerTypesQuery,
+    trialsGetByCancerTypeUsingGETWithHttpInfo(parameters: {
+        'cancerType' ? : string,
+        'treatment' ? : string,
+        'address' ? : string,
+        'country' ? : string,
+        'distance' ? : number,
         $queryParameters ? : any,
-        $domain ? : string
+            $domain ? : string
     }): Promise < request.Response > {
         const domain = parameters.$domain ? parameters.$domain : this.domain;
         const errorHandlers = this.errorHandlers;
         const request = this.request;
-        let path = '/trials/cancerTypes';
+        let path = '/trials-by-cancer-type';
         let body: any;
         let queryParameters: any = {};
         let headers: any = {};
@@ -3887,13 +4047,24 @@ export default class OncoKbAPI {
             headers['Accept'] = 'application/json';
             headers['Content-Type'] = 'application/json';
 
-            if (parameters['body'] !== undefined) {
-                body = parameters['body'];
+            if (parameters['cancerType'] !== undefined) {
+                queryParameters['cancerType'] = parameters['cancerType'];
             }
 
-            if (parameters['body'] === undefined) {
-                reject(new Error('Missing required  parameter: body'));
-                return;
+            if (parameters['treatment'] !== undefined) {
+                queryParameters['treatment'] = parameters['treatment'];
+            }
+
+            if (parameters['address'] !== undefined) {
+                queryParameters['address'] = parameters['address'];
+            }
+
+            if (parameters['country'] !== undefined) {
+                queryParameters['country'] = parameters['country'];
+            }
+
+            if (parameters['distance'] !== undefined) {
+                queryParameters['distance'] = parameters['distance'];
             }
 
             if (parameters.$queryParameters) {
@@ -3903,26 +4074,35 @@ export default class OncoKbAPI {
                 });
             }
 
-            request('POST', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
 
         });
     };
 
     /**
-     * Return a list of trials using cancer types
+     * Return a list of clinical trials by cancer type, treatment, location and distance
      * @method
-     * @name OncoKbAPI#trialsGetByCancerTypesUsingPOST
-     * @param {} body - body
+     * @name OncoKbAPI#trialsGetByCancerTypeUsingGET
+     * @param {string} cancerType - The cancer type that clinical trials belong to. Support cancer type name and OncoTree Code. Example: Glioma or AASTR. Support special cancer types: ALL_TUMORS, ALL_SOLID_TUMORS, ALL_LIQUID_TUMORS.
+     * @param {string} treatment - Consisted of single/multiple drugs. Support drug name or NCIT code. For multiple drugs treatment, use '+' as separator. Example: Binimetinib+Ribociclib
+     * @param {string} address - The address of your location. Support zip code. Must be specified with country request parameter. Example: New York City, NY
+     * @param {string} country - The country of your location. Must be specified with the address request parameter. Example: United States
+     * @param {number} distance - The radius from your location. Must be specified with address and country request parameters. Example: 100, which means all trails have any site locates within 100 km from your location. If not specify, the default distance is 100km.
      */
-    trialsGetByCancerTypesUsingPOST(parameters: {
-        'body': CancerTypesQuery,
-        $queryParameters ? : any,
-        $domain ? : string
-    }): Promise < {} > {
-        return this.trialsGetByCancerTypesUsingPOSTWithHttpInfo(parameters).then(function(response: request.Response) {
-            return response.body;
-        });
-    };
+    trialsGetByCancerTypeUsingGET(parameters: {
+            'cancerType' ? : string,
+            'treatment' ? : string,
+            'address' ? : string,
+            'country' ? : string,
+            'distance' ? : number,
+            $queryParameters ? : any,
+                $domain ? : string
+        }): Promise < Array < ClinicalTrial >
+        > {
+            return this.trialsGetByCancerTypeUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+                return response.body;
+            });
+        };
     utilsAllActionableVariantsGetUsingGETURL(parameters: {
         'version' ? : string,
         $queryParameters ? : any
@@ -3947,7 +4127,7 @@ export default class OncoKbAPI {
      * Get All Actionable Variants.
      * @method
      * @name OncoKbAPI#utilsAllActionableVariantsGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsAllActionableVariantsGetUsingGETWithHttpInfo(parameters: {
         'version' ? : string,
@@ -3986,7 +4166,7 @@ export default class OncoKbAPI {
      * Get All Actionable Variants.
      * @method
      * @name OncoKbAPI#utilsAllActionableVariantsGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsAllActionableVariantsGetUsingGET(parameters: {
             'version' ? : string,
@@ -4022,7 +4202,7 @@ export default class OncoKbAPI {
      * Get All Actionable Variants in text file.
      * @method
      * @name OncoKbAPI#utilsAllActionableVariantsTxtGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsAllActionableVariantsTxtGetUsingGETWithHttpInfo(parameters: {
         'version' ? : string,
@@ -4061,7 +4241,7 @@ export default class OncoKbAPI {
      * Get All Actionable Variants in text file.
      * @method
      * @name OncoKbAPI#utilsAllActionableVariantsTxtGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsAllActionableVariantsTxtGetUsingGET(parameters: {
         'version' ? : string,
@@ -4096,7 +4276,7 @@ export default class OncoKbAPI {
      * Get All Annotated Variants.
      * @method
      * @name OncoKbAPI#utilsAllAnnotatedVariantsGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsAllAnnotatedVariantsGetUsingGETWithHttpInfo(parameters: {
         'version' ? : string,
@@ -4135,7 +4315,7 @@ export default class OncoKbAPI {
      * Get All Annotated Variants.
      * @method
      * @name OncoKbAPI#utilsAllAnnotatedVariantsGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsAllAnnotatedVariantsGetUsingGET(parameters: {
             'version' ? : string,
@@ -4171,7 +4351,7 @@ export default class OncoKbAPI {
      * Get All Annotated Variants in text file.
      * @method
      * @name OncoKbAPI#utilsAllAnnotatedVariantsTxtGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsAllAnnotatedVariantsTxtGetUsingGETWithHttpInfo(parameters: {
         'version' ? : string,
@@ -4210,7 +4390,7 @@ export default class OncoKbAPI {
      * Get All Annotated Variants in text file.
      * @method
      * @name OncoKbAPI#utilsAllAnnotatedVariantsTxtGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsAllAnnotatedVariantsTxtGetUsingGET(parameters: {
         'version' ? : string,
@@ -4223,12 +4403,17 @@ export default class OncoKbAPI {
     };
     utilsAllCuratedGenesGetUsingGETURL(parameters: {
         'version' ? : string,
+        'includeEvidence' ? : boolean,
         $queryParameters ? : any
     }): string {
         let queryParameters: any = {};
         let path = '/utils/allCuratedGenes';
         if (parameters['version'] !== undefined) {
             queryParameters['version'] = parameters['version'];
+        }
+
+        if (parameters['includeEvidence'] !== undefined) {
+            queryParameters['includeEvidence'] = parameters['includeEvidence'];
         }
 
         if (parameters.$queryParameters) {
@@ -4245,10 +4430,12 @@ export default class OncoKbAPI {
      * Get list of genes OncoKB curated
      * @method
      * @name OncoKbAPI#utilsAllCuratedGenesGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
+     * @param {boolean} includeEvidence - Include gene summary and background
      */
     utilsAllCuratedGenesGetUsingGETWithHttpInfo(parameters: {
         'version' ? : string,
+        'includeEvidence' ? : boolean,
         $queryParameters ? : any,
             $domain ? : string
     }): Promise < request.Response > {
@@ -4268,6 +4455,10 @@ export default class OncoKbAPI {
                 queryParameters['version'] = parameters['version'];
             }
 
+            if (parameters['includeEvidence'] !== undefined) {
+                queryParameters['includeEvidence'] = parameters['includeEvidence'];
+            }
+
             if (parameters.$queryParameters) {
                 Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
                     var parameter = parameters.$queryParameters[parameterName];
@@ -4284,10 +4475,12 @@ export default class OncoKbAPI {
      * Get list of genes OncoKB curated
      * @method
      * @name OncoKbAPI#utilsAllCuratedGenesGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
+     * @param {boolean} includeEvidence - Include gene summary and background
      */
     utilsAllCuratedGenesGetUsingGET(parameters: {
             'version' ? : string,
+            'includeEvidence' ? : boolean,
             $queryParameters ? : any,
                 $domain ? : string
         }): Promise < Array < CuratedGene >
@@ -4298,12 +4491,17 @@ export default class OncoKbAPI {
         };
     utilsAllCuratedGenesTxtGetUsingGETURL(parameters: {
         'version' ? : string,
+        'includeEvidence' ? : boolean,
         $queryParameters ? : any
     }): string {
         let queryParameters: any = {};
         let path = '/utils/allCuratedGenes.txt';
         if (parameters['version'] !== undefined) {
             queryParameters['version'] = parameters['version'];
+        }
+
+        if (parameters['includeEvidence'] !== undefined) {
+            queryParameters['includeEvidence'] = parameters['includeEvidence'];
         }
 
         if (parameters.$queryParameters) {
@@ -4320,10 +4518,12 @@ export default class OncoKbAPI {
      * Get list of genes OncoKB curated in text file.
      * @method
      * @name OncoKbAPI#utilsAllCuratedGenesTxtGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
+     * @param {boolean} includeEvidence - Include gene summary and background
      */
     utilsAllCuratedGenesTxtGetUsingGETWithHttpInfo(parameters: {
         'version' ? : string,
+        'includeEvidence' ? : boolean,
         $queryParameters ? : any,
             $domain ? : string
     }): Promise < request.Response > {
@@ -4343,6 +4543,10 @@ export default class OncoKbAPI {
                 queryParameters['version'] = parameters['version'];
             }
 
+            if (parameters['includeEvidence'] !== undefined) {
+                queryParameters['includeEvidence'] = parameters['includeEvidence'];
+            }
+
             if (parameters.$queryParameters) {
                 Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
                     var parameter = parameters.$queryParameters[parameterName];
@@ -4359,10 +4563,12 @@ export default class OncoKbAPI {
      * Get list of genes OncoKB curated in text file.
      * @method
      * @name OncoKbAPI#utilsAllCuratedGenesTxtGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
+     * @param {boolean} includeEvidence - Include gene summary and background
      */
     utilsAllCuratedGenesTxtGetUsingGET(parameters: {
         'version' ? : string,
+        'includeEvidence' ? : boolean,
         $queryParameters ? : any,
             $domain ? : string
     }): Promise < string > {
@@ -4394,7 +4600,7 @@ export default class OncoKbAPI {
      * Get cancer gene list
      * @method
      * @name OncoKbAPI#utilsCancerGeneListGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsCancerGeneListGetUsingGETWithHttpInfo(parameters: {
         'version' ? : string,
@@ -4433,7 +4639,7 @@ export default class OncoKbAPI {
      * Get cancer gene list
      * @method
      * @name OncoKbAPI#utilsCancerGeneListGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsCancerGeneListGetUsingGET(parameters: {
             'version' ? : string,
@@ -4469,7 +4675,7 @@ export default class OncoKbAPI {
      * Get cancer gene list in text file.
      * @method
      * @name OncoKbAPI#utilsCancerGeneListTxtGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsCancerGeneListTxtGetUsingGETWithHttpInfo(parameters: {
         'version' ? : string,
@@ -4508,7 +4714,7 @@ export default class OncoKbAPI {
      * Get cancer gene list in text file.
      * @method
      * @name OncoKbAPI#utilsCancerGeneListTxtGetUsingGET
-     * @param {string} version - version
+     * @param {string} version - The data version
      */
     utilsCancerGeneListTxtGetUsingGET(parameters: {
         'version' ? : string,

@@ -17,6 +17,12 @@ export type TreatmentDrug = {
         'treatmentDrugId': TreatmentDrugId
 
 };
+export type Eligibility = {
+    'structured': StructuredEligibility
+
+        'unstructured': Array < UnstructuredEligibility >
+
+};
 export type Query = {
     'alteration': string
 
@@ -49,6 +55,238 @@ export type MatchVariant = {
     'alteration': string
 
         'hugoSymbol': string
+
+};
+export type MainNumber = {
+    'alteration': number
+
+        'drug': number
+
+        'gene': number
+
+        'level': Array < MainNumberLevel >
+
+        'tumorType': number
+
+};
+export type CancerTypeCount = {
+    'cancerType': string
+
+        'count': number
+
+};
+export type Implication = {
+    'abstracts': Array < ArticleAbstract >
+
+        'alterations': Array < string >
+
+        'description': string
+
+        'levelOfEvidence': "LEVEL_0" | "LEVEL_1" | "LEVEL_2" | "LEVEL_2A" | "LEVEL_2B" | "LEVEL_3A" | "LEVEL_3B" | "LEVEL_4" | "LEVEL_R1" | "LEVEL_R2" | "LEVEL_R3" | "LEVEL_Px1" | "LEVEL_Px2" | "LEVEL_Px3" | "LEVEL_Dx1" | "LEVEL_Dx2" | "LEVEL_Dx3" | "NO"
+
+        'pmids': Array < string >
+
+        'tumorType': TumorType
+
+};
+export type StructuredEligibility = {
+    'acceptsHealthyVolunteers': boolean
+
+        'gender': string
+
+        'maxAge': string
+
+        'maxAgeInYears': number
+
+        'maxAgeNumber': number
+
+        'maxAgeUnit': string
+
+        'minAge': string
+
+        'minAgeInYears': number
+
+        'minAgeNumber': number
+
+        'minAgeUnit': string
+
+};
+export type Gene = {
+    'entrezGeneId': number
+
+        'geneAliases': Array < string >
+
+        'genesets': Array < Geneset >
+
+        'grch37Isoform': string
+
+        'grch37RefSeq': string
+
+        'grch38Isoform': string
+
+        'grch38RefSeq': string
+
+        'hugoSymbol': string
+
+        'oncogene': boolean
+
+        'tsg': boolean
+
+};
+export type TumorType = {
+    'code': string
+
+        'color': string
+
+        'id': number
+
+        'level': number
+
+        'mainType': string
+
+        'subtype': string
+
+        'tissue': string
+
+        'tumorForm': "SOLID" | "LIQUID" | "MIXED"
+
+};
+export type EnsemblTranscript = {
+    'ccdsId': string
+
+        'exons': Array < Exon >
+
+        'geneId': string
+
+        'hugoSymbols': Array < string >
+
+        'pfamDomains': Array < PfamDomainRange >
+
+        'proteinId': string
+
+        'proteinLength': number
+
+        'refseqMrnaId': string
+
+        'transcriptId': string
+
+        'utrs': Array < UntranslatedRegion >
+
+};
+export type TreatmentDrugId = {
+    'drug': Drug
+
+};
+export type MatchVariantResult = {
+    'query': Query
+
+        'result': Array < MatchVariant >
+
+};
+export type Coordinates = {
+    'lat': number
+
+        'lon': number
+
+};
+export type Arms = {
+    'armDescription': string
+
+        'drugs': Array < Drug >
+
+};
+export type MatchVariantRequest = {
+    'oncokbVariants': Array < MatchVariant >
+
+        'queries': Array < Query >
+
+};
+export type VariantConsequence = {
+    'description': string
+
+        'isGenerallyTruncating': boolean
+
+        'term': string
+
+};
+export type PfamDomainRange = {
+    'pfamDomainEnd': number
+
+        'pfamDomainId': string
+
+        'pfamDomainStart': number
+
+};
+export type BiologicalVariant = {
+    'mutationEffect': string
+
+        'mutationEffectAbstracts': Array < ArticleAbstract >
+
+        'mutationEffectPmids': Array < string >
+
+        'oncogenic': string
+
+        'oncogenicAbstracts': Array < ArticleAbstract >
+
+        'oncogenicPmids': Array < string >
+
+        'variant': Alteration
+
+};
+export type ClinicalTrial = {
+    'arms': Array < Arms >
+
+        'briefTitle': string
+
+        'collaborators': Array < Collaborator >
+
+        'currentTrialStatus': string
+
+        'currentTrialStatusDate': string
+
+        'eligibility': Eligibility
+
+        'nctId': string
+
+        'phase': string
+
+        'previousTrialStatus': string
+
+        'previousTrialStatusDate': string
+
+        'principalInvestigator': string
+
+        'sites': Array < Site >
+
+};
+export type UnstructuredEligibility = {
+    'description': string
+
+        'displayOrder': number
+
+        'inclusionIndicator': boolean
+
+};
+export type Site = {
+    'org': Organization
+
+};
+export type Organization = {
+    'address': string
+
+        'city': string
+
+        'coordinates': Coordinates
+
+        'country': string
+
+        'email': string
+
+        'name': string
+
+        'phone': string
+
+        'state': string
 
 };
 export type Article = {
@@ -111,24 +349,6 @@ export type DownloadAvailability = {
         'hasSqlDump': boolean
 
         'version': string
-
-};
-export type MainNumber = {
-    'alteration': number
-
-        'drug': number
-
-        'gene': number
-
-        'level': Array < MainNumberLevel >
-
-        'tumorType': number
-
-};
-export type CancerTypeCount = {
-    'cancerType': string
-
-        'count': number
 
 };
 export type VariantAnnotation = {
@@ -213,20 +433,6 @@ export type AnnotatedVariant = {
         'variant': string
 
 };
-export type Implication = {
-    'abstracts': Array < ArticleAbstract >
-
-        'alterations': Array < string >
-
-        'description': string
-
-        'levelOfEvidence': "LEVEL_0" | "LEVEL_1" | "LEVEL_2" | "LEVEL_2A" | "LEVEL_2B" | "LEVEL_3A" | "LEVEL_3B" | "LEVEL_4" | "LEVEL_R1" | "LEVEL_R2" | "LEVEL_R3" | "LEVEL_Px1" | "LEVEL_Px2" | "LEVEL_Px3" | "LEVEL_Dx1" | "LEVEL_Dx2" | "LEVEL_Dx3" | "NO"
-
-        'pmids': Array < string >
-
-        'tumorType': TumorType
-
-};
 export type NCITDrug = {
     'description': string
 
@@ -263,46 +469,6 @@ export type Exon = {
         'version': number
 
 };
-export type Gene = {
-    'entrezGeneId': number
-
-        'geneAliases': Array < string >
-
-        'genesets': Array < Geneset >
-
-        'grch37Isoform': string
-
-        'grch37RefSeq': string
-
-        'grch38Isoform': string
-
-        'grch38RefSeq': string
-
-        'hugoSymbol': string
-
-        'oncogene': boolean
-
-        'tsg': boolean
-
-};
-export type TumorType = {
-    'code': string
-
-        'color': string
-
-        'id': number
-
-        'level': number
-
-        'mainType': string
-
-        'subtype': string
-
-        'tissue': string
-
-        'tumorForm': "SOLID" | "LIQUID" | "MIXED"
-
-};
 export type ClinicalVariant = {
     'cancerTypes': Array < TumorType >
 
@@ -335,38 +501,6 @@ export type PortalAlteration = {
         'proteinStartPosition': number
 
         'sampleId': string
-
-};
-export type EnsemblTranscript = {
-    'ccdsId': string
-
-        'exons': Array < Exon >
-
-        'geneId': string
-
-        'hugoSymbols': Array < string >
-
-        'pfamDomains': Array < PfamDomainRange >
-
-        'proteinId': string
-
-        'proteinLength': number
-
-        'refseqMrnaId': string
-
-        'transcriptId': string
-
-        'utrs': Array < UntranslatedRegion >
-
-};
-export type TreatmentDrugId = {
-    'drug': Drug
-
-};
-export type MatchVariantResult = {
-    'query': Query
-
-        'result': Array < MatchVariant >
 
 };
 export type Evidence = {
@@ -469,26 +603,12 @@ export type TranscriptResult = {
         'note': string
 
 };
-export type MatchVariantRequest = {
-    'oncokbVariants': Array < MatchVariant >
-
-        'queries': Array < Query >
-
-};
 export type MainType = {
     'id': number
 
         'name': string
 
         'tumorForm': "SOLID" | "LIQUID" | "MIXED"
-
-};
-export type VariantConsequence = {
-    'description': string
-
-        'isGenerallyTruncating': boolean
-
-        'term': string
 
 };
 export type GeneNumber = {
@@ -507,20 +627,14 @@ export type GeneNumber = {
         'tumorType': number
 
 };
-export type PfamDomainRange = {
-    'pfamDomainEnd': number
-
-        'pfamDomainId': string
-
-        'pfamDomainStart': number
-
-};
 export type IndicatorQueryTreatment = {
     'abstracts': Array < ArticleAbstract >
 
         'alterations': Array < string >
 
         'approvedIndications': Array < string >
+
+        'clinicalTrials': Array < ClinicalTrial >
 
         'description': string
 
@@ -541,28 +655,18 @@ export type Treatment = {
         'priority': number
 
 };
+export type Collaborator = {
+    'functionalRole': string
+
+        'name': string
+
+};
 export type MutationEffectResp = {
     'citations': Citations
 
         'description': string
 
         'knownEffect': string
-
-};
-export type BiologicalVariant = {
-    'mutationEffect': string
-
-        'mutationEffectAbstracts': Array < ArticleAbstract >
-
-        'mutationEffectPmids': Array < string >
-
-        'oncogenic': string
-
-        'oncogenicAbstracts': Array < ArticleAbstract >
-
-        'oncogenicPmids': Array < string >
-
-        'variant': Alteration
 
 };
 export type Geneset = {
@@ -2086,7 +2190,6 @@ export default class OncoKbPrivateAPI {
         };
     utilRelevantCancerTypesPostUsingPOSTURL(parameters: {
         'levelOfEvidence' ? : "LEVEL_0" | "LEVEL_1" | "LEVEL_2" | "LEVEL_2A" | "LEVEL_2B" | "LEVEL_3A" | "LEVEL_3B" | "LEVEL_4" | "LEVEL_R1" | "LEVEL_R2" | "LEVEL_R3" | "LEVEL_Px1" | "LEVEL_Px2" | "LEVEL_Px3" | "LEVEL_Dx1" | "LEVEL_Dx2" | "LEVEL_Dx3" | "NO",
-        'onlyDetailedCancerType' ? : boolean,
         'body': Array < RelevantCancerTypeQuery > ,
             $queryParameters ? : any
     }): string {
@@ -2094,10 +2197,6 @@ export default class OncoKbPrivateAPI {
         let path = '/utils/relevantCancerTypes';
         if (parameters['levelOfEvidence'] !== undefined) {
             queryParameters['levelOfEvidence'] = parameters['levelOfEvidence'];
-        }
-
-        if (parameters['onlyDetailedCancerType'] !== undefined) {
-            queryParameters['onlyDetailedCancerType'] = parameters['onlyDetailedCancerType'];
         }
 
         if (parameters.$queryParameters) {
@@ -2115,12 +2214,10 @@ export default class OncoKbPrivateAPI {
      * @method
      * @name OncoKbPrivateAPI#utilRelevantCancerTypesPostUsingPOST
      * @param {string} levelOfEvidence - Level of Evidence
-     * @param {boolean} onlyDetailedCancerType - Return only Detailed Cancer Type.
      * @param {} body - List of queries.
      */
     utilRelevantCancerTypesPostUsingPOSTWithHttpInfo(parameters: {
         'levelOfEvidence' ? : "LEVEL_0" | "LEVEL_1" | "LEVEL_2" | "LEVEL_2A" | "LEVEL_2B" | "LEVEL_3A" | "LEVEL_3B" | "LEVEL_4" | "LEVEL_R1" | "LEVEL_R2" | "LEVEL_R3" | "LEVEL_Px1" | "LEVEL_Px2" | "LEVEL_Px3" | "LEVEL_Dx1" | "LEVEL_Dx2" | "LEVEL_Dx3" | "NO",
-        'onlyDetailedCancerType' ? : boolean,
         'body': Array < RelevantCancerTypeQuery > ,
             $queryParameters ? : any,
             $domain ? : string
@@ -2139,10 +2236,6 @@ export default class OncoKbPrivateAPI {
 
             if (parameters['levelOfEvidence'] !== undefined) {
                 queryParameters['levelOfEvidence'] = parameters['levelOfEvidence'];
-            }
-
-            if (parameters['onlyDetailedCancerType'] !== undefined) {
-                queryParameters['onlyDetailedCancerType'] = parameters['onlyDetailedCancerType'];
             }
 
             if (parameters['body'] !== undefined) {
@@ -2171,12 +2264,10 @@ export default class OncoKbPrivateAPI {
      * @method
      * @name OncoKbPrivateAPI#utilRelevantCancerTypesPostUsingPOST
      * @param {string} levelOfEvidence - Level of Evidence
-     * @param {boolean} onlyDetailedCancerType - Return only Detailed Cancer Type.
      * @param {} body - List of queries.
      */
     utilRelevantCancerTypesPostUsingPOST(parameters: {
             'levelOfEvidence' ? : "LEVEL_0" | "LEVEL_1" | "LEVEL_2" | "LEVEL_2A" | "LEVEL_2B" | "LEVEL_3A" | "LEVEL_3B" | "LEVEL_4" | "LEVEL_R1" | "LEVEL_R2" | "LEVEL_R3" | "LEVEL_Px1" | "LEVEL_Px2" | "LEVEL_Px3" | "LEVEL_Dx1" | "LEVEL_Dx2" | "LEVEL_Dx3" | "NO",
-            'onlyDetailedCancerType' ? : boolean,
             'body': Array < RelevantCancerTypeQuery > ,
                 $queryParameters ? : any,
                 $domain ? : string
@@ -2387,6 +2478,258 @@ export default class OncoKbPrivateAPI {
                 return response.body;
             });
         };
+    utilUpdateTranscriptGetUsingGETURL(parameters: {
+        'hugoSymbol' ? : string,
+        'entrezGeneId' ? : number,
+        'grch37Isoform' ? : string,
+        'grch37RefSeq' ? : string,
+        'grch38Isoform' ? : string,
+        'grch38RefSeq' ? : string,
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/utils/updateTranscript';
+        if (parameters['hugoSymbol'] !== undefined) {
+            queryParameters['hugoSymbol'] = parameters['hugoSymbol'];
+        }
+
+        if (parameters['entrezGeneId'] !== undefined) {
+            queryParameters['entrezGeneId'] = parameters['entrezGeneId'];
+        }
+
+        if (parameters['grch37Isoform'] !== undefined) {
+            queryParameters['grch37Isoform'] = parameters['grch37Isoform'];
+        }
+
+        if (parameters['grch37RefSeq'] !== undefined) {
+            queryParameters['grch37RefSeq'] = parameters['grch37RefSeq'];
+        }
+
+        if (parameters['grch38Isoform'] !== undefined) {
+            queryParameters['grch38Isoform'] = parameters['grch38Isoform'];
+        }
+
+        if (parameters['grch38RefSeq'] !== undefined) {
+            queryParameters['grch38RefSeq'] = parameters['grch38RefSeq'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * utilUpdateTranscriptGet
+     * @method
+     * @name OncoKbPrivateAPI#utilUpdateTranscriptGetUsingGET
+     * @param {string} hugoSymbol - hugoSymbol
+     * @param {integer} entrezGeneId - entrezGeneId
+     * @param {string} grch37Isoform - grch37Isoform
+     * @param {string} grch37RefSeq - grch37RefSeq
+     * @param {string} grch38Isoform - grch38Isoform
+     * @param {string} grch38RefSeq - grch38RefSeq
+     */
+    utilUpdateTranscriptGetUsingGETWithHttpInfo(parameters: {
+        'hugoSymbol' ? : string,
+        'entrezGeneId' ? : number,
+        'grch37Isoform' ? : string,
+        'grch37RefSeq' ? : string,
+        'grch38Isoform' ? : string,
+        'grch38RefSeq' ? : string,
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/utils/updateTranscript';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = 'application/json';
+            headers['Content-Type'] = 'application/json';
+
+            if (parameters['hugoSymbol'] !== undefined) {
+                queryParameters['hugoSymbol'] = parameters['hugoSymbol'];
+            }
+
+            if (parameters['entrezGeneId'] !== undefined) {
+                queryParameters['entrezGeneId'] = parameters['entrezGeneId'];
+            }
+
+            if (parameters['grch37Isoform'] !== undefined) {
+                queryParameters['grch37Isoform'] = parameters['grch37Isoform'];
+            }
+
+            if (parameters['grch37RefSeq'] !== undefined) {
+                queryParameters['grch37RefSeq'] = parameters['grch37RefSeq'];
+            }
+
+            if (parameters['grch38Isoform'] !== undefined) {
+                queryParameters['grch38Isoform'] = parameters['grch38Isoform'];
+            }
+
+            if (parameters['grch38RefSeq'] !== undefined) {
+                queryParameters['grch38RefSeq'] = parameters['grch38RefSeq'];
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * utilUpdateTranscriptGet
+     * @method
+     * @name OncoKbPrivateAPI#utilUpdateTranscriptGetUsingGET
+     * @param {string} hugoSymbol - hugoSymbol
+     * @param {integer} entrezGeneId - entrezGeneId
+     * @param {string} grch37Isoform - grch37Isoform
+     * @param {string} grch37RefSeq - grch37RefSeq
+     * @param {string} grch38Isoform - grch38Isoform
+     * @param {string} grch38RefSeq - grch38RefSeq
+     */
+    utilUpdateTranscriptGetUsingGET(parameters: {
+        'hugoSymbol' ? : string,
+        'entrezGeneId' ? : number,
+        'grch37Isoform' ? : string,
+        'grch37RefSeq' ? : string,
+        'grch38Isoform' ? : string,
+        'grch38RefSeq' ? : string,
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < any > {
+        return this.utilUpdateTranscriptGetUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
+    utilValidateTranscriptUpdateGetUsingGETURL(parameters: {
+        'hugoSymbol' ? : string,
+        'entrezGeneId' ? : number,
+        'grch37Isoform' ? : string,
+        'grch38Isoform' ? : string,
+        $queryParameters ? : any
+    }): string {
+        let queryParameters: any = {};
+        let path = '/utils/validateTranscriptUpdate';
+        if (parameters['hugoSymbol'] !== undefined) {
+            queryParameters['hugoSymbol'] = parameters['hugoSymbol'];
+        }
+
+        if (parameters['entrezGeneId'] !== undefined) {
+            queryParameters['entrezGeneId'] = parameters['entrezGeneId'];
+        }
+
+        if (parameters['grch37Isoform'] !== undefined) {
+            queryParameters['grch37Isoform'] = parameters['grch37Isoform'];
+        }
+
+        if (parameters['grch38Isoform'] !== undefined) {
+            queryParameters['grch38Isoform'] = parameters['grch38Isoform'];
+        }
+
+        if (parameters.$queryParameters) {
+            Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                var parameter = parameters.$queryParameters[parameterName];
+                queryParameters[parameterName] = parameter;
+            });
+        }
+        let keys = Object.keys(queryParameters);
+        return this.domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '');
+    };
+
+    /**
+     * utilValidateTranscriptUpdateGet
+     * @method
+     * @name OncoKbPrivateAPI#utilValidateTranscriptUpdateGetUsingGET
+     * @param {string} hugoSymbol - hugoSymbol
+     * @param {integer} entrezGeneId - entrezGeneId
+     * @param {string} grch37Isoform - grch37Isoform
+     * @param {string} grch38Isoform - grch38Isoform
+     */
+    utilValidateTranscriptUpdateGetUsingGETWithHttpInfo(parameters: {
+        'hugoSymbol' ? : string,
+        'entrezGeneId' ? : number,
+        'grch37Isoform' ? : string,
+        'grch38Isoform' ? : string,
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < request.Response > {
+        const domain = parameters.$domain ? parameters.$domain : this.domain;
+        const errorHandlers = this.errorHandlers;
+        const request = this.request;
+        let path = '/utils/validateTranscriptUpdate';
+        let body: any;
+        let queryParameters: any = {};
+        let headers: any = {};
+        let form: any = {};
+        return new Promise(function(resolve, reject) {
+            headers['Accept'] = 'text/plain';
+            headers['Content-Type'] = 'application/json';
+
+            if (parameters['hugoSymbol'] !== undefined) {
+                queryParameters['hugoSymbol'] = parameters['hugoSymbol'];
+            }
+
+            if (parameters['entrezGeneId'] !== undefined) {
+                queryParameters['entrezGeneId'] = parameters['entrezGeneId'];
+            }
+
+            if (parameters['grch37Isoform'] !== undefined) {
+                queryParameters['grch37Isoform'] = parameters['grch37Isoform'];
+            }
+
+            if (parameters['grch38Isoform'] !== undefined) {
+                queryParameters['grch38Isoform'] = parameters['grch38Isoform'];
+            }
+
+            if (parameters.$queryParameters) {
+                Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+                    var parameter = parameters.$queryParameters[parameterName];
+                    queryParameters[parameterName] = parameter;
+                });
+            }
+
+            request('GET', domain + path, body, headers, queryParameters, form, reject, resolve, errorHandlers);
+
+        });
+    };
+
+    /**
+     * utilValidateTranscriptUpdateGet
+     * @method
+     * @name OncoKbPrivateAPI#utilValidateTranscriptUpdateGetUsingGET
+     * @param {string} hugoSymbol - hugoSymbol
+     * @param {integer} entrezGeneId - entrezGeneId
+     * @param {string} grch37Isoform - grch37Isoform
+     * @param {string} grch38Isoform - grch38Isoform
+     */
+    utilValidateTranscriptUpdateGetUsingGET(parameters: {
+        'hugoSymbol' ? : string,
+        'entrezGeneId' ? : number,
+        'grch37Isoform' ? : string,
+        'grch38Isoform' ? : string,
+        $queryParameters ? : any,
+            $domain ? : string
+    }): Promise < string > {
+        return this.utilValidateTranscriptUpdateGetUsingGETWithHttpInfo(parameters).then(function(response: request.Response) {
+            return response.body;
+        });
+    };
     validateTrialsUsingGETURL(parameters: {
         'nctIds' ? : Array < string > ,
             $queryParameters ? : any

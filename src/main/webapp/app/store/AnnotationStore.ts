@@ -20,6 +20,7 @@ import {
 import {
   BiologicalVariant,
   CancerTypeCount,
+  ClinicalTrial,
   ClinicalVariant,
   GeneNumber,
   PortalAlteration,
@@ -55,6 +56,14 @@ export type TherapeuticImplication = {
   drugs: string;
   cancerTypes: string[];
   citations: Citations;
+};
+
+export type ClinicalTrialRecord = {
+  level: string;
+  alterations: string;
+  cancerType: string;
+  drugs: string;
+  clinicalTrial: ClinicalTrial;
 };
 
 export function getCustomFilterAppliers() {
