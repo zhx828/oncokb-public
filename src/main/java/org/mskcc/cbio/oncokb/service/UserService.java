@@ -420,8 +420,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
-        return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(user -> userMapper.userToUserDTO(user));
+    public List<UserDTO> getAllManagedUsers() {
+        return userRepository.findAllByLoginNot(Constants.ANONYMOUS_USER).stream().map(user -> userMapper.userToUserDTO(user)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

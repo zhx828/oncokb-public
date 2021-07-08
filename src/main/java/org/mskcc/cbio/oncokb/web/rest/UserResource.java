@@ -173,34 +173,15 @@ public class UserResource {
     /**
      * {@code GET /users} : get all users.
      *
-     * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
     @GetMapping("/users")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable) {
-        if (!onlyContainsAllowedProperties(pageable)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        final List<UserDTO> page = userService.getAllManagedUsers();
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
-
-    /**
-     * {@code GET /users/registered} : get all registered user deatils.
-     *
-     * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
-     */
-    @GetMapping("/users/registered")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<List<UserDTO>> getAllRegisteredUsers(Pageable pageable) {
-        final Page<UserDTO> page = userService.getAllRegisteredUsers(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
 
 
     private boolean onlyContainsAllowedProperties(Pageable pageable) {
