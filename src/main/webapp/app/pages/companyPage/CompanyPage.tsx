@@ -10,12 +10,14 @@ import {
   LICENSE_MODEL_TITLES,
   LICENSE_STATUS_TITLES,
   LICENSE_TITLES,
+  PAGE_ROUTE,
   THRESHOLD_NUM_OF_USER,
 } from 'app/config/constants';
 import { Alert, Button, Col, Modal, Row } from 'react-bootstrap';
 import {
   CompanyDTO,
   CompanyVM,
+  ManagedUserVM,
   Token,
   UserDTO,
 } from 'app/shared/api/generated/API';
@@ -45,6 +47,10 @@ import {
   fieldRequiredValidation,
   textValidation,
 } from 'app/shared/utils/FormValidationUtils';
+import { Link } from 'react-router-dom';
+import { QuickToolButton } from '../userPage/QuickToolButton';
+import CreateUsersModal from 'app/shared/modal/CreateUsersModal';
+import { SimpleConfirmModal } from 'app/shared/modal/SimpleConfirmModal';
 
 interface MatchParams {
   id: string;
@@ -84,9 +90,10 @@ export default class CompanyPage extends React.Component<
   @observable selectedLicenseStatus: LicenseStatus;
   @observable conflictingDomains: string[] = [];
 
-  @observable showModal = false;
-  @observable confirmModalText = '';
+  @observable showLicenseChangeModal = false;
+  @observable confirmLicenseChangeModalText = '';
   @observable formValues: any;
+  @observable showBatchAddModal = false;
 
   @observable companyTableLoading = true;
   @observable companyUsers: UserDTO[] = [];
@@ -165,8 +172,8 @@ export default class CompanyPage extends React.Component<
       this.company.licenseStatus !== this.selectedLicenseStatus &&
       this.companyUsers.length > 0
     ) {
-      this.showModal = true;
-      this.confirmModalText =
+      this.showLicenseChangeModal = true;
+      this.confirmLicenseChangeModalText =
         LICENSE_STATUS_UPDATE_MESSAGES[this.company.licenseStatus][
           this.selectedLicenseStatus
         ];
@@ -176,8 +183,34 @@ export default class CompanyPage extends React.Component<
   }
 
   @action.bound
+  async onBatchUserSubmit(managedUserVMs: Partial<ManagedUserVM>[]) {
+    this.getCompanyStatus = PromiseStatus.pending;
+    const newUsers: ManagedUserVM[] = managedUserVMs.map(userVM => {
+      return {
+        ...userVM,
+        password: 'test',
+        licenseType: this.company.licenseType,
+        tokenIsRenewable: this.company.licenseStatus !== LicenseStatus.TRIAL,
+        company: this.company,
+        companyName: this.company.name,
+      } as ManagedUserVM;
+    });
+    try {
+      await client.createUsersUsingPOST({ managedUserVMs: newUsers });
+      this.getCompanyUsers();
+      this.selectedUsersOptions = [];
+      this.showBatchAddModal = false;
+      notifySuccess(`Users created and associated with ${this.company.name}`);
+    } catch (error) {
+      notifyError(error);
+    } finally {
+      this.getCompanyStatus = PromiseStatus.complete;
+    }
+  }
+
+  @action.bound
   async updateCompany() {
-    this.showModal = false;
+    this.showLicenseChangeModal = false;
     this.getCompanyStatus = PromiseStatus.pending;
     this.companyTableLoading = true;
     this.userDropdownLoading = true;
@@ -280,6 +313,24 @@ export default class CompanyPage extends React.Component<
     );
   }
 
+  @computed
+  get licenseChangeModalBody() {
+    return (
+      <>
+        <div>
+          Are you sure you want to change the company's license status from{' '}
+          <span className="font-weight-bold">{this.company.licenseStatus}</span>{' '}
+          to{' '}
+          <span className="font-weight-bold">{this.selectedLicenseStatus}</span>
+          ?
+        </div>
+        <Alert variant={'warning'} style={{ marginTop: '20px' }}>
+          Warning: {this.confirmLicenseChangeModalText}
+        </Alert>
+      </>
+    );
+  }
+
   render() {
     return (
       <If condition={this.getCompanyStatus === PromiseStatus.pending}>
@@ -297,6 +348,18 @@ export default class CompanyPage extends React.Component<
               {this.company !== undefined && (
                 <DocumentTitle title={this.company.name}>
                   <>
+                    <Row className={getSectionClassName()}>
+                      <Col>
+                        <div>Quick Tools</div>
+                        <div>
+                          <QuickToolButton
+                            onClick={() => (this.showBatchAddModal = true)}
+                          >
+                            Create Company Users
+                          </QuickToolButton>
+                        </div>
+                      </Col>
+                    </Row>
                     <AvForm
                       onValidSubmit={this.showConfirmModal}
                       onKeyPress={(event: any) => {
@@ -550,45 +613,18 @@ export default class CompanyPage extends React.Component<
                         </Col>
                       </Row>
                     </AvForm>
-                    <Modal
-                      show={this.showModal}
-                      onHide={() => (this.showModal = false)}
-                    >
-                      <Modal.Header closeButton>
-                        <Modal.Title>Review Company Changes</Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body>
-                        <div>
-                          Are you sure you want to change the company's license
-                          status from{' '}
-                          <span className="font-weight-bold">
-                            {this.company.licenseStatus}
-                          </span>{' '}
-                          to{' '}
-                          <span className="font-weight-bold">
-                            {this.selectedLicenseStatus}
-                          </span>
-                          ?
-                        </div>
-                        <Alert
-                          variant={'warning'}
-                          style={{ marginTop: '20px' }}
-                        >
-                          Warning: {this.confirmModalText}
-                        </Alert>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button
-                          variant="secondary"
-                          onClick={() => (this.showModal = false)}
-                        >
-                          Close
-                        </Button>
-                        <Button variant="primary" onClick={this.updateCompany}>
-                          Update
-                        </Button>
-                      </Modal.Footer>
-                    </Modal>
+                    <SimpleConfirmModal
+                      show={this.showLicenseChangeModal}
+                      title={'Review Company Changes'}
+                      body={this.licenseChangeModalBody}
+                      onCancel={() => (this.showLicenseChangeModal = false)}
+                      onConfirm={this.updateCompany}
+                    />
+                    <CreateUsersModal
+                      show={this.showBatchAddModal}
+                      onCancel={() => (this.showBatchAddModal = false)}
+                      onSubmit={this.onBatchUserSubmit}
+                    />
                   </>
                 </DocumentTitle>
               )}
