@@ -20,9 +20,11 @@ import { Linkout } from 'app/shared/links/Linkout';
 import { RouterStore } from 'mobx-react-router';
 import { scrollWidthOffsetInNews } from 'app/shared/utils/Utils';
 import { inject, observer } from 'mobx-react';
-import indexStyles from 'app/index.module.scss';
 import { Version } from 'app/pages/LevelOfEvidencePage';
 import OptimizedImage from 'app/shared/image/OptimizedImage';
+import { NewlyAddedGenesListItem } from 'app/pages/newsPage/NewlyAddedGenesListItem';
+import { SopPageLink } from 'app/shared/utils/UrlUtils';
+
 @inject('routing')
 @observer
 export default class NewsPage extends React.Component<{
@@ -79,6 +81,44 @@ export default class NewsPage extends React.Component<{
             <CitationText />
           </div>
           <div className="mt-2">
+            <NewsList date={'12132022'} />
+            <NewsList date={'11302022'}>
+              <ul>
+                <li>
+                  <NewlyAddedGenesListItem
+                    title={'Addition of 15 new genes - a total of 711 to date!'}
+                    sort
+                    genes={[
+                      'ATRIP',
+                      'BAALC',
+                      'CHTF8',
+                      'EIF2B1',
+                      'FZR1',
+                      'LGR5',
+                      'MLLT3',
+                      'MYBL1',
+                      'PSMB2',
+                      'RAD17',
+                      'REV3L',
+                      'RNAseH2A',
+                      'RNAseH2B',
+                      'SET',
+                      'SQSTM1',
+                    ]}
+                  />
+                </li>
+                <li>
+                  In addition to monthly data releases, OncoKB will now release
+                  data following any relevant new or updated FDA-approvals or
+                  changes to tumor-type specific NCCN Guidelines (in accordance
+                  with the procedures outlined in the{' '}
+                  <SopPageLink version={2.2} />
+                  ). This ensures the most relevant clinical implications are
+                  incorporated into the API as soon as possible.
+                </li>
+              </ul>
+            </NewsList>
+            <NewsList date={'10282022'} />
             <NewsList date={'09062022'} />
             <NewsList date={'07252022'} />
             <NewsList date={'06062022'} />

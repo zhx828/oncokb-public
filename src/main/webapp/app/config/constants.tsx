@@ -345,7 +345,7 @@ export const H5_FONT_SIZE = '1.25rem';
 export const FONT_FAMILY = "'Gotham Book', sans-serif";
 
 // we do not have the table component to support api pagination, have to set the threshold to pull the list of all users
-export const THRESHOLD_NUM_OF_USER = 5000;
+export const THRESHOLD_NUM_OF_USER = 10000;
 
 // Defaults for tooltip size
 export const TOOLTIP_MAX_HEIGHT = 300;
@@ -728,6 +728,9 @@ export type DataRelease = {
 };
 
 export const DATA_RELEASES: DataRelease[] = [
+  { date: '12132022', version: 'v3.19' },
+  { date: '11302022', version: 'v3.18' },
+  { date: '10282022', version: 'v3.17' },
   { date: '09062022', version: 'v3.16' },
   { date: '07252022', version: 'v3.15' },
   { date: '06062022', version: 'v3.14' },
