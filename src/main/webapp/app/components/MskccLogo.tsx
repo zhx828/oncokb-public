@@ -1,10 +1,13 @@
 import * as React from 'react';
 
-import mskLogo from 'content/images/msk-logo-white.svg';
-import mskIcon from 'content/images/msk-icon-white.svg';
+import mskBlackLogo from 'content/images/msk/msk-logo-black.svg';
+import mskBlackIcon from 'content/images/msk/msk-icon-black.svg';
+import mskWhiteLogo from 'content/images/msk/msk-logo-white.svg';
+import mskWhiteIcon from 'content/images/msk/msk-icon-white.svg';
 import OptimizedImage from 'app/shared/image/OptimizedImage';
 
 class MskccLogo extends React.Component<{
+  color: 'white' | 'blue' | 'black';
   imageHeight?: number;
   size?: 'sm' | 'lg';
   className?: string;
@@ -13,6 +16,18 @@ class MskccLogo extends React.Component<{
     size: 'lg',
   };
   public render() {
+    let mskLogo;
+    let mskIcon;
+    switch (this.props.color) {
+      case 'black':
+        mskLogo = mskBlackLogo;
+        mskIcon = mskBlackIcon;
+        break;
+      default:
+        mskLogo = mskWhiteLogo;
+        mskIcon = mskWhiteIcon;
+        break;
+    }
     return (
       <a
         href="https://www.mskcc.org"

@@ -4,15 +4,15 @@
   line-height: 2.5rem;
   font-family: 'Gotham Bold';
   min-height: 3rem;
-  color: $oncokb-dark-blue;
+  color: $oncokb-blue;
   border-radius: 0;
-  border-bottom: 1px solid $oncokb-dark-blue;
+  border-bottom: 1px solid $oncokb-blue;
   display: flex;
   align-items: center;
 }
 
 :global(.btn).withHref > a {
-  color: $oncokb-dark-blue;
+  color: $oncokb-blue;
   &:hover,
   &:focus {
     text-decoration: none;
@@ -22,7 +22,7 @@
 :global(.btn).withoutHref {
   &:hover,
   &:focus {
-    color: $oncokb-dark-blue;
+    color: $oncokb-blue;
     text-decoration: none;
   }
 }

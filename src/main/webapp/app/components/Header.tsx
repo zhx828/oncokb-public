@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
+// import oncokbImg from 'content/images/oncokb.svg';
 import oncokbImg from 'oncokb-styles/dist/images/logo/oncokb-white.svg';
 import { observer } from 'mobx-react';
 import WindowStore from 'app/store/WindowStore';
@@ -119,7 +120,7 @@ class Header extends React.Component<IHeaderProps> {
           <Navbar
             bg="oncokb"
             expand="lg"
-            className="navbar-dark main-navbar"
+            className="navbar-light"
             expanded={this.isNavExpanded}
           >
             <Container fluid={!this.props.windowStore.isLargeScreen}>
@@ -172,6 +173,7 @@ class Header extends React.Component<IHeaderProps> {
                   />
                   <Nav.Item style={{ paddingRight: 0 }}>
                     <MskccLogo
+                      color={'white'}
                       imageHeight={35}
                       size={
                         this.props.windowStore.isLargeScreen &&

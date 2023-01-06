@@ -13,6 +13,7 @@ body,
 h1,
 h2 {
   @include font-gotham('bold');
+  color: $oncokb-dark-blue;
 }
 
 h3,
@@ -20,6 +21,14 @@ h4,
 h5,
 h6 {
   @include font-gotham('medium');
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: $oncokb-dark-blue;
 }
 
 b {
@@ -56,6 +65,7 @@ b {
     background-color: $nav-bg-color;
     padding-top: 0;
     padding-bottom: 0;
+    border-bottom: 0.2rem solid $nav-text-color;
 
     .nav-link {
       padding-left: 0;
@@ -64,12 +74,12 @@ b {
 
     .navbar-nav {
       & > .nav-item {
-        color: white;
+        color: $nav-text-color;
         line-height: 2.75rem;
         border-bottom: 0.3rem solid $nav-bg-color;
 
         &.active {
-          border-bottom-color: $oncokb-darker-blue;
+          border-bottom-color: $nav-text-color;
         }
 
         &:hover {
@@ -89,14 +99,18 @@ b {
     padding-bottom: 0;
   }
 
+  .navbar-dark .navbar-toggler {
+    color: $nav-text-color;
+  }
   .navbar-dark .navbar-nav .nav-link {
-    color: white;
+    color: $nav-text-color;
   }
 }
 
 #account-menu {
   line-height: 2.75rem;
-  border-bottom: 0.25rem $primary;
+  color: $nav-text-color;
+  border-bottom: 0.25rem $nav-text-color;
 }
 
 .team,

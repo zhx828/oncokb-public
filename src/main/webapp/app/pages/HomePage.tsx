@@ -33,7 +33,7 @@ import OncoKBSearch from 'app/components/oncokbSearch/OncoKBSearch';
 import autobind from 'autobind-decorator';
 import * as QueryString from 'query-string';
 import { FDA_L1_DISABLED_BTN_TOOLTIP } from 'app/pages/genePage/FdaUtils';
-import { COLOR_DARK_BLUE } from 'app/config/theme';
+import { COLOR_BLUE, COLOR_DARK_BLUE } from 'app/config/theme';
 import WindowStore from 'app/store/WindowStore';
 
 interface IHomeProps {

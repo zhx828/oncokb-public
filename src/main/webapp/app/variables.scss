@@ -1,20 +1,22 @@
 @import '~oncokb-styles/scss/vars';
 
 $oncokb-font-font-size: 15px;
-$oncokb-blue: #0968c3;
+$oncokb-blue: #0073e0;
+$oncokb-dark-blue: #002569;
 /* Overwrite the bootstrap defaults */
 $font-family-sans-serif: 'Gotham Book', serif;
 // color overwrite
-$blue: $oncokb-blue;
+$blue: $oncokb-dark-blue;
 $grey: #808080; // grey
 $light-grey: #d3d3d3; // light grey
-$primary: $oncokb-blue;
+$primary: $oncokb-dark-blue;
 $secondary: $grey;
 $warning: #ffc107;
 $danger: #dc3545;
 
 $link-hover-color: $oncokb-darker-blue;
-$nav-bg-color: $oncokb-blue;
+$nav-bg-color: $oncokb-dark-blue;
+$nav-text-color: white;
 
 $navbar-padding-x: 0;
 $grid-breakpoints: (

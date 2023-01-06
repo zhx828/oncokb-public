@@ -103,7 +103,7 @@ class Footer extends React.Component<{ lastDataUpdate: string }> {
                 'd-flex flex-column justify-content-center align-items-center my-1'
               }
             >
-              <MskccLogo imageHeight={50} />
+              <MskccLogo imageHeight={50} color={'white'} />
             </Col>
             <Col
               lg
