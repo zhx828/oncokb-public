@@ -59,7 +59,7 @@ import InfoIcon from 'app/shared/icons/InfoIcon';
 import { COLOR_BLUE } from 'app/config/theme';
 import * as styles from 'app/index.module.scss';
 import { Version } from 'app/pages/LevelOfEvidencePage';
-import { Link } from 'react-router-dom';
+import { Link, Switch } from 'react-router-dom';
 import { LevelOfEvidencePageLink } from 'app/shared/links/LevelOfEvidencePageLink';
 
 // Likely Oncogenic, Predicted Oncogenic will be converted to Oncogenic
@@ -800,6 +800,17 @@ export function getAlterationName(
     return name;
   } else {
     return `${name} (${alt})`;
+  }
+}
+
+export function getOtherBiomarkerGeneName(alteration: string) {
+  switch (alteration) {
+    case 'MSI-H':
+      return 'MSI';
+    case 'TMB-H':
+      return 'TMB';
+    default:
+      return '';
   }
 }
 

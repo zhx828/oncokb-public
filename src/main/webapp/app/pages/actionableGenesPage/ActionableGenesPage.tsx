@@ -24,6 +24,7 @@ import {
   getCancerTypesNameFromOncoTreeType,
   getDefaultColumnDefinition,
   getDrugNameFromTreatment,
+  getOtherBiomarkerGeneName,
   getPageTitle,
   getTreatmentNameFromEvidence,
   isFdaLevel,
@@ -44,6 +45,7 @@ import {
   LEVELS,
   LG_TABLE_FIXED_HEIGHT,
   ONCOKB_LEVELS,
+  OTHER_BIOMARKERS,
   PAGE_TITLE,
   QUERY_SEPARATOR_FOR_QUERY_STRING,
   REFERENCE_GENOME,
@@ -258,10 +260,16 @@ export default class ActionableGenesPage extends React.Component<
         alteration.referenceGenomes.includes(this.refGenome)
       );
       if (matchedAlterations.length > 0) {
+        const geneName =
+          item.gene.hugoSymbol === OTHER_BIOMARKERS
+            ? matchedAlterations
+                .map(alt => getOtherBiomarkerGeneName(alt.alteration))
+                .join(', ')
+            : item.gene.hugoSymbol;
         treatments.push({
           level: levelOfEvidence2Level(item.levelOfEvidence, true),
           fdaLevel: levelOfEvidence2Level(item.fdaLevel, true),
-          hugoSymbol: item.gene.hugoSymbol || 'NA',
+          hugoSymbol: geneName || 'NA',
           alterations: _.sortBy(matchedAlterations, 'name'),
           cancerTypes: item.cancerTypes,
           excludedCancerTypes: item.excludedCancerTypes,
