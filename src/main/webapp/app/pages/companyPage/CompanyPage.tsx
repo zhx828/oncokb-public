@@ -34,7 +34,6 @@ import { FormListField } from 'app/shared/list/FormListField';
 import { UserTable } from 'app/shared/table/UserTable';
 import Select from 'react-select';
 import DocumentTitle from 'react-document-title';
-import { DefaultTooltip, remoteData } from 'cbioportal-frontend-commons';
 import { AdditionalInfoSelect } from 'app/shared/dropdown/AdditionalInfoSelect';
 import {
   debouncedCompanyNameValidator,
@@ -68,7 +67,13 @@ import UsageText from 'app/shared/texts/UsageText';
 import { DateSelector } from 'app/components/dateSelector/DateSelector';
 import { DownloadButton } from 'app/components/downloadButton/DownloadButton';
 import { RouterStore } from 'mobx-react-router';
-import { TEXT_VAL } from 'app/shared/utils/FormValidationUtils';
+import {
+  LONG_TEXT_VAL,
+  SHORT_TEXT_VAL,
+  TEXT_VAL,
+} from 'app/shared/utils/FormValidationUtils';
+import { remoteData } from 'app/shared/api/remoteData';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 
 interface MatchParams {
   id: string;

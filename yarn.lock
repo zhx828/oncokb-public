@@ -5098,7 +5098,7 @@ caseless@^0.12.0, caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-cbioportal-frontend-commons@0.2.11, cbioportal-frontend-commons@^0.2.11:
+cbioportal-frontend-commons@^0.2.11:
   version "0.2.11"
   resolved "https://registry.yarnpkg.com/cbioportal-frontend-commons/-/cbioportal-frontend-commons-0.2.11.tgz#11814c3c76d73a0b28cbd96b59a24a516b3a6b25"
   integrity sha512-M8Iy7mOa5Rj0SM4KoAea77ERiDS/IyNfG+bmEyuAKL1qv6bYxDSxPqLJ7aoA/+GvG3+O9GaKTfHXHWqSXf07/w==

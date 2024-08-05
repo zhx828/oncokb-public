@@ -1,6 +1,6 @@
 import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import InfoIcon from 'app/shared/icons/InfoIcon';
 import ButtonWithTooltip from 'app/shared/button/ButtonWithTooltip';
 

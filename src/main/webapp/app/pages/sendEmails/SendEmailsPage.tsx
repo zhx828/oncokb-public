@@ -7,7 +7,7 @@ import {
   reaction,
 } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import client from 'app/shared/api/clientInstance';
 import {
   MailTypeInfo,

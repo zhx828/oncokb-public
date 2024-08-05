@@ -10,7 +10,7 @@ import {
   COLOR_ICON_WITH_INFO,
   COLOR_ICON_WITHOUT_INFO,
 } from 'app/config/theme';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import WithSeparator from 'react-with-separator';
 import { MUTATION_EFFECT, ONCOGENICITY } from 'app/config/constants';
 import { getHighestLevelStrings } from 'app/pages/genePage/GeneInfo';

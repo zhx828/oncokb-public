@@ -22,7 +22,7 @@ import { Link } from 'react-router-dom';
 import autobind from 'autobind-decorator';
 import { Row, Dropdown, DropdownButton } from 'react-bootstrap';
 import { PAGE_ROUTE, USAGE_ALL_TIME_KEY } from 'app/config/constants';
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import * as QueryString from 'query-string';
 import { UsageToggleGroup } from './UsageToggleGroup';
 import { TableCellRenderer } from 'react-table';

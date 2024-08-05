@@ -4,7 +4,6 @@ import { inject, observer } from 'mobx-react';
 import autobind from 'autobind-decorator';
 import { action, observable, computed } from 'mobx';
 import { Link } from 'react-router-dom';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
 
 import { ReportIssue } from 'app/components/ReportIssue';
 import styles from 'app/pages/genePage/GenePage.module.scss';
@@ -44,6 +43,7 @@ import SummaryWithRefs from 'app/oncokb-frontend-commons/src/components/SummaryW
 import { LongText } from 'app/oncokb-frontend-commons/src/components/LongText';
 import { FdaTabDescription } from 'app/pages/annotationPage/TabDescriptor';
 import { DescriptionTooltip } from './DescriptionTooltip';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 
 export type Column = {
   key: ANNOTATION_PAGE_TAB_KEYS;

@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { Button, Col, Row } from 'react-bootstrap';
 import classnames from 'classnames';
 import privateClient from 'app/shared/api/oncokbPrivateClientInstance';
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import {
   action,
   computed,

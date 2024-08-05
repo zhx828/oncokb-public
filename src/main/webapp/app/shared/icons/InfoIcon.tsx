@@ -1,6 +1,6 @@
 import React from 'react';
 import { RCTooltip } from 'rc-tooltip';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 type IconType = 'info' | 'question';
 const InfoIcon: React.FunctionComponent<{
   overlay?:

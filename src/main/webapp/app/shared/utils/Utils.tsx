@@ -46,7 +46,7 @@ import {
 } from 'app/shared/utils/ReactTableUtils';
 import { TableCellRenderer } from 'react-table';
 import { LevelWithDescription } from 'app/components/LevelWithDescription';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import { CitationTooltip } from 'app/components/CitationTooltip';
 import {
   AlterationPageLink,

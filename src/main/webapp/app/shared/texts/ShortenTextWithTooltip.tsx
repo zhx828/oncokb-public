@@ -1,6 +1,6 @@
 import React from 'react';
 import WithSeparator from 'react-with-separator';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import { COLOR_BLUE } from 'app/config/theme';
 
 const ShortenTextWithTooltip: React.FunctionComponent<{

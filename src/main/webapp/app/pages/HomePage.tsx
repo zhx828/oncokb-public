@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { action, IReactionDisposer, observable, reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import classnames from 'classnames';
 import oncokbPrivateClient from '../shared/api/oncokbPrivateClientInstance';
 import {

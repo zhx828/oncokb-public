@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import { inject } from 'mobx-react';
 import { RouterStore } from 'mobx-react-router';
 import { FdaLevelIcon, OncoKBLevelIcon } from 'app/shared/utils/Utils';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import WithSeparator from 'react-with-separator';
 import LoadingIndicator, {
   LoaderSize,

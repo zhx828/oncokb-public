@@ -1,5 +1,5 @@
 import { action, observable } from 'mobx';
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import apiClient from 'app/shared/api/oncokbClientInstance';
 import { OncoKBInfo } from 'app/shared/api/generated/OncoKbAPI';
 import { MainNumber } from 'app/shared/api/generated/OncoKbPrivateAPI';

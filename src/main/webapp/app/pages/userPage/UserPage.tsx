@@ -43,7 +43,6 @@ import {
   UserCompany,
 } from 'app/shared/api/generated/API';
 import client from 'app/shared/api/clientInstance';
-import { DefaultTooltip, remoteData } from 'cbioportal-frontend-commons';
 import {
   action,
   computed,
@@ -89,6 +88,8 @@ import {
   getPasswordResetLink,
 } from 'app/shared/utils/UrlUtils';
 import { sortBy } from 'app/shared/utils/LodashUtils';
+import { remoteData } from 'app/shared/api/remoteData';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 
 export enum AccountStatus {
   ACTIVATED = 'Activated',

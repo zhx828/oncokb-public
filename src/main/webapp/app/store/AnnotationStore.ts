@@ -1,4 +1,4 @@
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import {
   DataFilterType,
   initDefaultMutationMapperStore,

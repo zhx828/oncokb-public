@@ -1,12 +1,12 @@
 import React, { CSSProperties } from 'react';
 import { observer } from 'mobx-react';
-import { remoteData } from 'cbioportal-frontend-commons';
 import request from 'superagent';
 import LoadingIndicator from 'app/components/loadingIndicator/LoadingIndicator';
 import { ArticleAbstract } from 'app/shared/api/generated/OncoKbAPI';
 import PmidItem from 'app/components/PmidItem';
 import ArticleAbstractItem from 'app/components/ArticleAbstractItem';
 import { TOOLTIP_MAX_HEIGHT } from 'app/config/constants';
+import { remoteData } from 'app/shared/api/remoteData';
 
 @observer
 export class CitationTooltip extends React.Component<

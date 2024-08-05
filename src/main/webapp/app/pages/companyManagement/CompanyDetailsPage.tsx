@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { observer } from 'mobx-react';
 import client from 'app/shared/api/clientInstance';
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import styles from './CompanyDetailsPage.module.scss';
 import { CompanyDTO } from 'app/shared/api/generated/API';
 import OncoKBTable, {

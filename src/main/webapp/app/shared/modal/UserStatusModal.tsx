@@ -1,4 +1,4 @@
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { UserDTO } from '../api/generated/API';

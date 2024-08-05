@@ -4,14 +4,14 @@ import * as QueryString from 'query-string';
 import client from 'app/shared/api/clientInstance';
 import { observable } from 'mobx';
 import LoadingIndicator from 'app/components/loadingIndicator/LoadingIndicator';
-import { remoteData } from 'cbioportal-frontend-commons';
 import { Link } from 'react-router-dom';
 import { ONCOKB_TM, PAGE_ROUTE } from 'app/config/constants';
 import { inject, observer } from 'mobx-react';
-import { Col, Row, Alert } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import SmallPageContainer from '../SmallPageContainer';
 import MessageToContact from 'app/shared/texts/MessageToContact';
 import * as styles from '../../index.module.scss';
+import { remoteData } from 'app/shared/api/remoteData';
 
 @inject('routing')
 @observer

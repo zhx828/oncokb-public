@@ -15,7 +15,7 @@ import {
   USAGE_ALL_TIME_VALUE,
   USAGE_DAY_DETAIL_TIME_KEY,
 } from 'app/config/constants';
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import {
   ToggleValue,
   UsageRecord,

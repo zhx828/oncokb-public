@@ -25,7 +25,7 @@ import LoadingIndicator, {
 } from 'app/components/loadingIndicator/LoadingIndicator';
 import autobind from 'autobind-decorator';
 import BarChart from 'app/components/barChart/BarChart';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import {
   ANNOTATION_PAGE_TAB_KEYS,
   DEFAULT_GENE,

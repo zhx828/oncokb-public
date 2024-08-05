@@ -3,13 +3,13 @@ import { SimpleTable, SimpleTableRow } from 'app/components/SimpleTable';
 import { LEVELS, LONG_TEXT_CUTOFF_COMPACT } from 'app/config/constants';
 import { FdaLevelIcon, OncoKBLevelIcon } from 'app/shared/utils/Utils';
 import { CitationTooltip } from 'app/components/CitationTooltip';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
 import { Citations } from 'app/shared/api/generated/OncoKbAPI';
 import { ImplicationDescriptionCell } from 'app/pages/annotationPage/ImplicationDescriptionCell';
 import { Else, If, Then } from 'react-if';
 import styles from './index.module.scss';
 import WindowStore from 'app/store/WindowStore';
 import { LongText } from 'app/oncokb-frontend-commons/src/components/LongText';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 
 export type DataType = 'tx' | 'dx' | 'px' | 'fda';
 

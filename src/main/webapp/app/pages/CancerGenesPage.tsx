@@ -1,5 +1,4 @@
 import React from 'react';
-import { DefaultTooltip, remoteData } from 'cbioportal-frontend-commons';
 import { CancerGene, CuratedGene } from 'app/shared/api/generated/OncoKbAPI';
 import { inject, observer } from 'mobx-react';
 import { defaultSortMethod } from 'app/shared/utils/ReactTableUtils';
@@ -28,6 +27,7 @@ import { FeedbackType } from 'app/components/feedback/types';
 import WithSeparator from 'react-with-separator';
 import GeneAliasesDescription from 'app/shared/texts/GeneAliasesDescription';
 import CommonInfoIcon from 'app/shared/icons/InfoIcon';
+import { remoteData } from 'app/shared/api/remoteData';
 
 const InfoIcon = (props: { overlay: string | JSX.Element }) => {
   return (

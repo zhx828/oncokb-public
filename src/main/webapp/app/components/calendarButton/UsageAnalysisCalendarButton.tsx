@@ -7,7 +7,7 @@ import 'react-day-picker/lib/style.css';
 import moment from 'moment';
 import { APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import MomentLocaleUtils from 'react-day-picker/moment';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 
 type CalendarButtonProps = {
   currentFromDate: string | undefined;

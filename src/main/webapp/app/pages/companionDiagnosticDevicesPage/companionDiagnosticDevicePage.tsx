@@ -14,7 +14,6 @@ import { Button, Col, Row } from 'react-bootstrap';
 import classnames from 'classnames';
 import WithSeparator from 'react-with-separator';
 import { AlterationPageLink, GenePageLink } from 'app/shared/utils/UrlUtils';
-import { pluralize } from 'cbioportal-frontend-commons';
 import { downloadFile } from 'app/shared/utils/FileUtils';
 import CancerTypeSelect from 'app/shared/dropdown/CancerTypeSelect';
 import {
@@ -26,6 +25,7 @@ import { TumorType } from 'app/shared/api/generated/OncoKbPrivateAPI';
 import { FdaSubmissionLink } from 'app/shared/links/FdaSubmissionLink';
 import { Linkout } from 'app/shared/links/Linkout';
 import InfoIcon from 'app/shared/icons/InfoIcon';
+import pluralize from 'pluralize';
 import { sortByKey, uniq, uniqBy } from 'app/shared/utils/LodashUtils';
 
 export interface ICompanionDiagnosticDevice {

@@ -16,7 +16,7 @@ import {
 import { RouterStore } from 'mobx-react-router';
 import { inject, observer } from 'mobx-react';
 import { SwaggerApiLink } from 'app/shared/links/SwaggerApiLink';
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import oncokbPrivateClient from 'app/shared/api/oncokbPrivateClientInstance';
 import { DownloadAvailability } from 'app/shared/api/generated/OncoKbPrivateAPI';
 import { Col, Row } from 'react-bootstrap';

@@ -16,7 +16,7 @@ import { inject, observer } from 'mobx-react';
 import { observable } from 'mobx';
 import AppStore from 'app/store/AppStore';
 import SearchInfoIcon from 'app/components/oncokbSearch/SearchInfoIcon';
-import { remoteData } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 
 interface IOncoKBSearch {
   routing?: RouterStore;

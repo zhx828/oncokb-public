@@ -1,6 +1,7 @@
 import React from 'react';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
-import { DefaultTooltipProps } from 'cbioportal-frontend-commons/dist/components/defaultTooltip/DefaultTooltip';
+import DefaultTooltip, {
+  DefaultTooltipProps,
+} from 'app/shared/tooltip/DefaultTooltip';
 import { Button, ButtonProps } from 'react-bootstrap';
 
 /**

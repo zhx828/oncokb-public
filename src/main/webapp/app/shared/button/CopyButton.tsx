@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Button, ButtonProps } from 'react-bootstrap';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import classnames from 'classnames';
 
 export const CopyButton: React.FunctionComponent<

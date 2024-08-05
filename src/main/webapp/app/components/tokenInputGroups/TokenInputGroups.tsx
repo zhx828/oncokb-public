@@ -2,7 +2,7 @@ import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 import { Token } from 'app/shared/api/generated/API';
 import { daysDiff, secDiff } from 'app/shared/utils/Utils';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import pluralize from 'pluralize';
 import classnames from 'classnames';
 import { computed } from 'mobx';

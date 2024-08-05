@@ -12,13 +12,14 @@ import {
   fieldRequiredValidation,
   SHORT_TEXT_VAL,
 } from 'app/shared/utils/FormValidationUtils';
-import { DefaultTooltip, remoteData } from 'cbioportal-frontend-commons';
 import LoadingIndicator from 'app/components/loadingIndicator/LoadingIndicator';
 import { LicenseStatus } from 'app/config/constants';
 import { PromiseStatus } from 'app/shared/utils/PromiseUtils';
 import { Link } from 'react-router-dom';
 import { getErrorMessage } from 'app/shared/alert/ErrorAlertUtils';
 import { COLOR_LIGHT_GREY } from 'app/config/theme';
+import { remoteData } from 'app/shared/api/remoteData';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import { partition } from 'app/shared/utils/LodashUtils';
 
 interface MatchParams {

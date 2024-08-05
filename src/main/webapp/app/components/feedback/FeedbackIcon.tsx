@@ -1,5 +1,5 @@
 import React from 'react';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import AppStore from 'app/store/AppStore';
 import { getAnnotationString } from 'app/components/feedback/FeedbackForm';
 import { Feedback, FeedbackType } from 'app/components/feedback/types';

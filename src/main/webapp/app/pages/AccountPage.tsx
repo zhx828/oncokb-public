@@ -15,7 +15,7 @@ import {
   getLicenseTitle,
   getSectionClassName,
 } from 'app/pages/account/AccountUtils';
-import { DefaultTooltip } from 'cbioportal-frontend-commons';
+import DefaultTooltip from 'app/shared/tooltip/DefaultTooltip';
 import classnames from 'classnames';
 import { Row, Col } from 'react-bootstrap';
 import SmallPageContainer from 'app/components/SmallPageContainer';
